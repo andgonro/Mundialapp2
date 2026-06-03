@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { GameData, Match } from '../../models/game-data.model';
+import { GameData, GroupStandingRow, Match } from '../../models/game-data.model';
 import { DataService } from '../../services/data.service';
+import { GroupStandingsService } from '../../services/group-standings.service';
 
 @Component({
   selector: 'app-partidos',
@@ -35,15 +36,20 @@ export class PartidosComponent implements OnInit, OnDestroy {
   errorMessage = '';
   selectedGroup = 'TODOS';
   matchesByStage: Record<string, Match[]> = {};
+  groupStandings: Record<string, GroupStandingRow[]> = {};
 
   private dataSubscription?: Subscription;
 
-  constructor(private readonly dataService: DataService) { }
+  constructor(
+    private readonly dataService: DataService,
+    private readonly groupStandingsService: GroupStandingsService
+  ) { }
 
   ngOnInit(): void {
     this.dataSubscription = this.dataService.getGameData().subscribe({
       next: (data) => {
         this.matchesByStage = this.groupMatchesByStage(data);
+        this.groupStandings = this.groupStandingsService.buildGroupStandings(data.matches);
         this.isLoading = false;
       },
       error: () => {
@@ -89,6 +95,21 @@ export class PartidosComponent implements OnInit, OnDestroy {
 
   trackByMatchId(_: number, match: Match): number {
     return match.id;
+  }
+
+  trackByGroup(_: number, group: string): string {
+    return group;
+  }
+
+  getStandingsForGroup(group: string): GroupStandingRow[] {
+    return this.groupStandings[group] ?? [];
+  }
+
+  get groupsToShow(): string[] {
+    if (this.selectedGroup === 'TODOS') {
+      return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+    }
+    return [this.selectedGroup];
   }
 
   private groupMatchesByStage(data: GameData): Record<string, Match[]> {

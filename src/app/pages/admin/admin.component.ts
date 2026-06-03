@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import {
   GameData,
   GoalType,
+  GroupStandingRow,
   Match,
   MatchGoal,
   MatchSide,
@@ -12,6 +13,7 @@ import {
 } from '../../models/game-data.model';
 import { DataService } from '../../services/data.service';
 import { ScoringService } from '../../services/scoring.service';
+import { GroupStandingsService } from '../../services/group-standings.service';
 
 interface PublishDataResponse {
   ok: boolean;
@@ -86,10 +88,12 @@ export class AdminComponent implements OnInit, OnDestroy {
   private originalData: GameData | null = null;
   private editableData: GameData | null = null;
   private directProgressionTargetsByMatchId = new Map<number, ProgressTarget[]>();
+  private groupSlotTargets = new Map<string, { matchId: number; side: MatchSide }>();
 
   constructor(
     private readonly dataService: DataService,
     private readonly scoringService: ScoringService,
+    private readonly groupStandingsService: GroupStandingsService,
     private readonly http: HttpClient
   ) { }
 
@@ -99,6 +103,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.originalData = this.cloneData(data);
         this.editableData = this.cloneData(data);
         this.directProgressionTargetsByMatchId = this.buildDirectProgressionTargets(data);
+        this.groupSlotTargets = this.buildGroupSlotTargets(data);
         this.recomputeDerivedViews();
         this.initializeEditorDefaults();
         this.isLoading = false;
@@ -221,6 +226,11 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.matchPenaltyWinnerInput = '';
 
       this.applyDirectKnockoutProgression(selectedMatch);
+
+      if (!this.isKnockoutMatch(selectedMatch) && selectedMatch.group) {
+        this.applyGroupProgression(selectedMatch.group);
+      }
+
       this.recomputeDerivedViews();
       this.editorInfoMessage = `Partido #${selectedMatch.id} reiniciado a pendiente.`;
       return;
@@ -255,6 +265,11 @@ export class AdminComponent implements OnInit, OnDestroy {
       : undefined;
 
     this.applyDirectKnockoutProgression(selectedMatch);
+
+    if (!this.isKnockoutMatch(selectedMatch) && selectedMatch.group) {
+      this.applyGroupProgression(selectedMatch.group);
+    }
+
     this.recomputeDerivedViews();
     this.editorInfoMessage = `Partido #${selectedMatch.id} actualizado y marcado como finalizado.`;
   }
@@ -623,6 +638,109 @@ export class AdminComponent implements OnInit, OnDestroy {
       const resolvedTeam = this.getResolvedTeamForToken(sourceMatch, target.token);
       const placeholder = `${target.token}${sourceMatch.id}`;
       this.setTeamOnMatchSide(targetMatch, target.targetSide, resolvedTeam ?? placeholder);
+    });
+  }
+
+  private buildGroupSlotTargets(data: GameData): Map<string, { matchId: number; side: MatchSide }> {
+    const targets = new Map<string, { matchId: number; side: MatchSide }>();
+
+    for (const match of data.matches) {
+      if (/^[12][A-L]$/.test(match.home_team)) {
+        targets.set(match.home_team, { matchId: match.id, side: 'home' });
+      }
+      if (/^[12][A-L]$/.test(match.away_team)) {
+        targets.set(match.away_team, { matchId: match.id, side: 'away' });
+      }
+      if (/^3[A-L]+$/.test(match.home_team)) {
+        targets.set(match.home_team, { matchId: match.id, side: 'home' });
+      }
+      if (/^3[A-L]+$/.test(match.away_team)) {
+        targets.set(match.away_team, { matchId: match.id, side: 'away' });
+      }
+    }
+
+    return targets;
+  }
+
+  private applyGroupProgression(group: string): void {
+    if (!this.editableData) {
+      return;
+    }
+
+    const groupMatches = this.editableData.matches.filter(
+      (m) => m.stage === 'Group Stage' && m.group === group
+    );
+    const allFinished = groupMatches.every((m) => m.status === 'FINISHED');
+
+    const groupStandings = this.groupStandingsService.buildGroupStandings(this.editableData.matches);
+    const rows = groupStandings[group] ?? [];
+
+    this.setGroupSlot(`1${group}`, allFinished && rows[0] ? rows[0].teamName : `1${group}`);
+    this.setGroupSlot(`2${group}`, allFinished && rows[1] ? rows[1].teamName : `2${group}`);
+
+    this.applyThirdPlaceProgressionIfAllGroupsComplete(groupStandings);
+  }
+
+  private setGroupSlot(slotCode: string, value: string): void {
+    if (!this.editableData) {
+      return;
+    }
+
+    const target = this.groupSlotTargets.get(slotCode);
+    if (!target) {
+      return;
+    }
+
+    const targetMatch = this.editableData.matches.find((m) => m.id === target.matchId);
+    if (targetMatch) {
+      this.setTeamOnMatchSide(targetMatch, target.side, value);
+    }
+  }
+
+  private applyThirdPlaceProgressionIfAllGroupsComplete(
+    groupStandings: Record<string, GroupStandingRow[]>
+  ): void {
+    if (!this.editableData) {
+      return;
+    }
+
+    const ALL_GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+
+    const allGroupsComplete = ALL_GROUPS.every((g) =>
+      this.editableData!.matches
+        .filter((m) => m.stage === 'Group Stage' && m.group === g)
+        .every((m) => m.status === 'FINISHED')
+    );
+
+    // Always restore 3rd-place slot codes first (idempotent reset)
+    this.groupSlotTargets.forEach((target, slotCode) => {
+      if (!slotCode.startsWith('3')) {
+        return;
+      }
+      const targetMatch = this.editableData?.matches.find((m) => m.id === target.matchId);
+      if (targetMatch) {
+        this.setTeamOnMatchSide(targetMatch, target.side, slotCode);
+      }
+    });
+
+    if (!allGroupsComplete) {
+      return;
+    }
+
+    // Collect 3rd-place bracket slot definitions
+    const bracketSlots: Array<{ code: string; matchId: number; side: MatchSide }> = [];
+    this.groupSlotTargets.forEach((target, slotCode) => {
+      if (slotCode.startsWith('3')) {
+        bracketSlots.push({ code: slotCode, matchId: target.matchId, side: target.side });
+      }
+    });
+
+    const allThirds = this.groupStandingsService.rankThirdPlacedTeams(groupStandings);
+    const top8Thirds = allThirds.slice(0, 8);
+    const slotAssignment = this.groupStandingsService.assignThirdPlaceSlots(top8Thirds, bracketSlots);
+
+    slotAssignment.forEach((teamName, slotCode) => {
+      this.setGroupSlot(slotCode, teamName);
     });
   }
 

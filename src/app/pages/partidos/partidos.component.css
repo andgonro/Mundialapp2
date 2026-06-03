@@ -107,3 +107,96 @@
 		gap: 0.5rem;
 	}
 }
+
+/* Group standings tables */
+.standings-section {
+	margin-top: 1.1rem;
+	display: grid;
+	gap: 1rem;
+}
+
+.standings-block {
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	padding: 0.75rem;
+	background: rgba(8, 20, 26, 0.7);
+}
+
+.standings-title {
+	font-size: 0.95rem;
+	color: var(--gold);
+	margin-bottom: 0.55rem;
+	font-weight: 600;
+}
+
+.standings-scroll {
+	overflow-x: auto;
+}
+
+.standings-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.83rem;
+	min-width: 280px;
+}
+
+.standings-table th,
+.standings-table td {
+	padding: 0.3rem 0.45rem;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.standings-table thead th {
+	color: var(--text-muted);
+	font-weight: 600;
+	border-bottom: 1px solid var(--line);
+}
+
+.standings-table tbody tr {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.standings-table tbody tr:last-child {
+	border-bottom: none;
+}
+
+.standings-table .col-team {
+	text-align: left;
+	white-space: nowrap;
+	max-width: 140px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.standings-table .col-pts {
+	font-weight: 700;
+	color: var(--green);
+}
+
+.standings-table .qualify td {
+	opacity: 1;
+}
+
+.standings-table tbody tr.qualify {
+	background: rgba(0, 200, 120, 0.06);
+}
+
+@media (min-width: 900px) {
+	.standings-section {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1300px) {
+	.standings-section {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+/* Hide detailed columns on narrow screens */
+@media (max-width: 480px) {
+	.standings-table .col-hide {
+		display: none;
+	}
+}
