@@ -94,6 +94,92 @@
 	width: 100%;
 }
 
+.editor-panel {
+	gap: 0.75rem;
+}
+
+.editor-grid {
+	margin-top: 0.75rem;
+	display: grid;
+	gap: 0.75rem;
+}
+
+.editor-card {
+	border: 1px solid var(--line);
+	border-radius: 12px;
+	padding: 0.8rem;
+	background: rgba(7, 20, 26, 0.76);
+	display: grid;
+	gap: 0.5rem;
+}
+
+.editor-card h4 {
+	margin: 0;
+	color: var(--gold);
+	font-size: 1.05rem;
+}
+
+.editor-card label {
+	font-size: 0.85rem;
+	color: var(--text-muted);
+}
+
+.editor-card input,
+.editor-card select {
+	min-height: 44px;
+	border-radius: 10px;
+	border: 1px solid var(--line);
+	padding: 0 0.7rem;
+	color: var(--text-main);
+	background: rgba(6, 18, 24, 0.9);
+}
+
+.score-row {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.45rem;
+}
+
+.score-row > div {
+	display: grid;
+	gap: 0.35rem;
+}
+
+.check-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-height: 44px;
+}
+
+.check-row input {
+	min-height: 20px;
+	min-width: 20px;
+	padding: 0;
+}
+
+.editor-card button,
+.editor-actions button {
+	min-height: 44px;
+	border-radius: 10px;
+	border: 1px solid rgba(209, 185, 111, 0.6);
+	background: rgba(209, 185, 111, 0.2);
+	color: var(--text-main);
+	cursor: pointer;
+}
+
+.editor-actions {
+	margin-top: 0.75rem;
+	display: flex;
+	gap: 0.55rem;
+	flex-wrap: wrap;
+}
+
+.editor-actions .btn-secondary {
+	border-color: var(--line);
+	background: rgba(15, 34, 44, 0.9);
+}
+
 .instructions {
 	margin: 0.75rem 0 0;
 	padding-left: 1.1rem;
@@ -108,5 +194,9 @@
 
 	.full-width {
 		grid-column: 1 / -1;
+	}
+
+	.editor-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }

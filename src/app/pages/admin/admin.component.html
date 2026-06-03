@@ -35,6 +35,113 @@
 		</article>
 
 		<section class="admin-grid" *ngIf="isAuthenticated">
+			<article class="panel full-width editor-panel">
+				<div class="section-head">
+					<h3>Editor rápido de data.json</h3>
+					<span class="chip">Sin backend</span>
+				</div>
+
+				<p class="muted">
+					Actualiza partido y goles aquí, revisa la clasificación en vivo y descarga un data.json listo para subir a GitHub.
+				</p>
+
+				<div class="editor-grid">
+					<section class="editor-card">
+						<h4>Actualizar partido</h4>
+
+						<label for="match-select">Partido</label>
+						<select
+							id="match-select"
+							name="match-select"
+							[(ngModel)]="selectedMatchId"
+							(ngModelChange)="onMatchSelectionChange()">
+							<option [ngValue]="null">Selecciona un partido</option>
+							<option *ngFor="let match of allMatches; trackBy: trackByMatchId" [ngValue]="match.id">
+								#{{ match.id }} · {{ match.home_team }} vs {{ match.away_team }}
+							</option>
+						</select>
+
+						<div class="score-row">
+							<div>
+								<label for="home-score">Marcador local</label>
+								<input
+									id="home-score"
+									name="home-score"
+									type="text"
+									inputmode="numeric"
+									[(ngModel)]="matchHomeScoreInput"
+									placeholder="vacío = null">
+							</div>
+
+							<div>
+								<label for="away-score">Marcador visitante</label>
+								<input
+									id="away-score"
+									name="away-score"
+									type="text"
+									inputmode="numeric"
+									[(ngModel)]="matchAwayScoreInput"
+									placeholder="vacío = null">
+							</div>
+						</div>
+
+						<label for="match-status">Estado</label>
+						<select
+							id="match-status"
+							name="match-status"
+							[(ngModel)]="matchStatusInput">
+							<option *ngFor="let status of statusOptions" [ngValue]="status.value">{{ status.label }}</option>
+						</select>
+
+						<label class="check-row" for="went-to-penalties">
+							<input
+								id="went-to-penalties"
+								name="went-to-penalties"
+								type="checkbox"
+								[(ngModel)]="matchWentToPenaltiesInput">
+							Fue a penaltis
+						</label>
+
+						<button type="button" (click)="applyMatchUpdate()">Aplicar cambios del partido</button>
+					</section>
+
+					<section class="editor-card">
+						<h4>Actualizar goleador</h4>
+
+						<label for="scorer-select">Goleador</label>
+						<select
+							id="scorer-select"
+							name="scorer-select"
+							[(ngModel)]="selectedScorerName"
+							(ngModelChange)="onScorerSelectionChange()">
+							<option [ngValue]="''">Selecciona un goleador</option>
+							<option *ngFor="let scorer of allScorers; trackBy: trackByScorerName" [ngValue]="scorer">
+								{{ scorer }}
+							</option>
+						</select>
+
+						<label for="scorer-goals">Goles totales</label>
+						<input
+							id="scorer-goals"
+							name="scorer-goals"
+							type="number"
+							min="0"
+							step="1"
+							[(ngModel)]="scorerGoalsInput">
+
+						<button type="button" (click)="applyScorerUpdate()">Aplicar goles del goleador</button>
+					</section>
+				</div>
+
+				<p class="state-box" *ngIf="editorInfoMessage">{{ editorInfoMessage }}</p>
+				<p class="state-box error" *ngIf="editorErrorMessage">{{ editorErrorMessage }}</p>
+
+				<div class="editor-actions">
+					<button type="button" (click)="downloadUpdatedData()">Descargar data.json actualizado</button>
+					<button type="button" class="btn-secondary" (click)="resetEditorChanges()">Reiniciar cambios</button>
+				</div>
+			</article>
+
 			<article class="panel">
 				<div class="section-head">
 					<h3>Partidos pendientes</h3>
@@ -69,12 +176,11 @@
 			</article>
 
 			<article class="panel full-width">
-				<h3>Cómo actualizar resultados</h3>
+				<h3>Cómo publicar los cambios</h3>
 				<ol class="instructions">
-					<li>Abre el repositorio en GitHub y entra en src/assets/data.json.</li>
-					<li>Edita home_score, away_score, status y goals del partido correspondiente.</li>
-					<li>En fase KO con penaltis, guarda el marcador de 120 minutos y marca went_to_penalties como true.</li>
-					<li>Actualiza también scorers_stats con los goles válidos (sin penaltis ni autogoles).</li>
+					<li>Usa el editor de arriba para actualizar partidos y goleadores.</li>
+					<li>Pulsa “Descargar data.json actualizado”.</li>
+					<li>En GitHub, reemplaza el archivo src/assets/data.json por el descargado.</li>
 					<li>Haz commit en main con un mensaje claro, por ejemplo: "actualiza jornada 2".</li>
 					<li>Recarga la web para ver la clasificación recalculada al instante.</li>
 				</ol>
