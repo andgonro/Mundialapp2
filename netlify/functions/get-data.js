@@ -13,15 +13,19 @@ function createGameDataStore() {
   const siteID = process.env.SITE_ID;
   const token = process.env.NETLIFY_TOKEN;
 
-  if (!siteID || !token) {
-    throw new Error('Blobs manual config missing: set SITE_ID and NETLIFY_TOKEN');
+  if ((siteID && !token) || (!siteID && token)) {
+    throw new Error('Blobs manual config is incomplete: set both SITE_ID and NETLIFY_TOKEN, or set neither to use Netlify runtime credentials');
   }
 
-  return getStore({
-    name: 'game-data',
-    siteID,
-    token
-  });
+  if (siteID && token) {
+    return getStore({
+      name: 'game-data',
+      siteID,
+      token
+    });
+  }
+
+  return getStore({ name: 'game-data' });
 }
 
 exports.handler = async () => {
