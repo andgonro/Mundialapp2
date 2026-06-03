@@ -11,6 +11,21 @@ function parseJsonSafe(value) {
   try { return JSON.parse(value); } catch (_) { return null; }
 }
 
+function createGameDataStore() {
+  const siteID = process.env.SITE_ID;
+  const token = process.env.NETLIFY_TOKEN;
+
+  if (!siteID || !token) {
+    throw new Error('Blobs manual config missing: set SITE_ID and NETLIFY_TOKEN');
+  }
+
+  return getStore({
+    name: 'game-data',
+    siteID,
+    token
+  });
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return reply(405, { message: 'Method not allowed' });
@@ -41,7 +56,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const store = getStore('game-data');
+    const store = createGameDataStore();
     await store.setJSON('current', updatedData);
 
     return reply(200, {

@@ -9,9 +9,24 @@ function reply(statusCode, payload) {
   return { statusCode, headers: JSON_HEADERS, body: JSON.stringify(payload) };
 }
 
+function createGameDataStore() {
+  const siteID = process.env.SITE_ID;
+  const token = process.env.NETLIFY_TOKEN;
+
+  if (!siteID || !token) {
+    throw new Error('Blobs manual config missing: set SITE_ID and NETLIFY_TOKEN');
+  }
+
+  return getStore({
+    name: 'game-data',
+    siteID,
+    token
+  });
+}
+
 exports.handler = async () => {
   try {
-    const store = getStore('game-data');
+    const store = createGameDataStore();
     const data = await store.get('current', { type: 'json' });
 
     if (!data) {
