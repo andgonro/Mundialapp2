@@ -2,7 +2,7 @@
 	<header class="panel">
 		<h2 class="page-title">Panel admin</h2>
 		<p class="page-subtitle">
-			Vista protegida para controlar el estado de la porra y actualizar resultados en el repositorio.
+			Vista protegida para controlar el estado de la porra y actualizar resultados.
 		</p>
 	</header>
 
@@ -42,7 +42,7 @@
 				</div>
 
 				<p class="muted">
-					Actualiza partido y goles aquí, revisa la clasificación en vivo y descarga un data.json listo para subir a GitHub.
+					Actualiza partido y goles aquí, revisa la clasificación en vivo y prepara un data.json actualizado.
 				</p>
 
 				<div class="editor-grid">
@@ -137,62 +137,24 @@
 				<p class="state-box error" *ngIf="editorErrorMessage">{{ editorErrorMessage }}</p>
 
 				<div class="editor-actions">
-					<button type="button" (click)="downloadUpdatedData()">Descargar data.json actualizado</button>
 					<button type="button" class="btn-secondary" (click)="resetEditorChanges()">Reiniciar cambios</button>
 				</div>
 
-				<section class="editor-card publish-card">
-					<h4>Publicar en GitHub</h4>
-					<p class="muted">
-						Envía el data.json editado a Netlify Function para crear un commit automático.
-					</p>
-
-					<label for="publish-secret">Clave de publicación</label>
+				<section class="editor-card blobs-card">
+					
+					<label for="blobs-publish-secret">Clave de publicación</label>
 					<input
-						id="publish-secret"
-						name="publish-secret"
+						id="blobs-publish-secret"
+						name="blobs-publish-secret"
 						type="password"
 						[(ngModel)]="publishSecretInput"
 						autocomplete="off">
-
-					<label for="commit-message">Mensaje de commit</label>
-					<input
-						id="commit-message"
-						name="commit-message"
-						type="text"
-						maxlength="120"
-						[(ngModel)]="commitMessageInput">
-
-					<button
-						type="button"
-						(click)="publishUpdatedDataToGitHub()"
-						[disabled]="isPublishingToGitHub">
-						{{ isPublishingToGitHub ? 'Publicando...' : 'Publicar en GitHub' }}
-					</button>
-
-					<p class="state-box" *ngIf="publishInfoMessage">{{ publishInfoMessage }}</p>
-					<p class="state-box error" *ngIf="publishErrorMessage">{{ publishErrorMessage }}</p>
-
-					<p class="muted commit-link" *ngIf="publishResultUrl">
-						<a [href]="publishResultUrl" target="_blank" rel="noopener">
-							Ver commit {{ publishResultSha || publishResultUrl }}
-						</a>
-					</p>
-				</section>
-
-				<section class="editor-card blobs-card">
-					<h4>Publicar en Blobs (paralelo)</h4>
-					<p class="muted">
-						Guarda el data.json en Netlify Blobs. Activa <code>blobsBackend: true</code> en environment.prod.ts para que la web lo cargue desde aquí.
-					</p>
-
-					<p class="muted blobs-note">Usa la misma clave de publicación del panel de arriba.</p>
 
 					<button
 						type="button"
 						(click)="publishUpdatedDataToBlobs()"
 						[disabled]="isBlobsPublishing">
-						{{ isBlobsPublishing ? 'Guardando...' : 'Publicar en Blobs' }}
+						{{ isBlobsPublishing ? 'Guardando...' : 'Publicar Actualización' }}
 					</button>
 
 					<p class="state-box" *ngIf="blobsPublishInfoMessage">{{ blobsPublishInfoMessage }}</p>
@@ -237,9 +199,7 @@
 				<h3>Cómo publicar los cambios</h3>
 				<ol class="instructions">
 					<li>Usa el editor de arriba para actualizar partidos y goleadores.</li>
-					<li>Opción GitHub: introduce la clave y pulsa "Publicar en GitHub" (crea commit automático).</li>
-					<li>Opción Blobs: pulsa "Publicar en Blobs" con la misma clave; activa <code>blobsBackend: true</code> en environment.prod.ts para que la web lo use.</li>
-					<li>Si no tienes clave, descarga data.json y súbelo manualmente al repo.</li>
+					<li>Introduce la clave y pulsa "Publicar" para guardar los datos actualizados.</li>
 					<li>Recarga la web para ver la clasificación recalculada al instante.</li>
 				</ol>
 			</article>

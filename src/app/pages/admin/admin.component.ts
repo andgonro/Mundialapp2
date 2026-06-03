@@ -51,12 +51,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   editorErrorMessage = '';
 
   publishSecretInput = '';
-  commitMessageInput = 'actualiza resultados';
-  isPublishingToGitHub = false;
-  publishInfoMessage = '';
-  publishErrorMessage = '';
-  publishResultUrl = '';
-  publishResultSha = '';
 
   isBlobsPublishing = false;
   blobsPublishInfoMessage = '';
@@ -277,55 +271,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     anchor.click();
 
     URL.revokeObjectURL(fileUrl);
-    this.editorInfoMessage = 'Archivo descargado. Súbelo al repo como src/assets/data.json y haz commit.';
-  }
-
-  publishUpdatedDataToGitHub(): void {
-    this.clearPublishMessages();
-
-    if (!this.editableData) {
-      this.publishErrorMessage = 'No hay datos para publicar.';
-      return;
-    }
-
-    const adminSecret = this.publishSecretInput.trim();
-    if (!adminSecret) {
-      this.publishErrorMessage = 'Introduce la clave de publicación.';
-      return;
-    }
-
-    const commitMessage = this.commitMessageInput.trim() || 'actualiza resultados';
-    this.isPublishingToGitHub = true;
-
-    this.http.post<PublishDataResponse>(
-      '/.netlify/functions/publish-data',
-      {
-        updatedData: this.editableData,
-        commitMessage
-      },
-      {
-        headers: {
-          'x-admin-secret': adminSecret
-        }
-      }
-    ).subscribe({
-      next: (response) => {
-        this.isPublishingToGitHub = false;
-        this.publishInfoMessage = response.message || 'Publicación completada.';
-        this.publishResultUrl = response.commitUrl || '';
-        this.publishResultSha = response.commitSha || '';
-        this.publishSecretInput = '';
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isPublishingToGitHub = false;
-        const payload = error.error as { message?: unknown } | null;
-        const backendMessage = payload && typeof payload.message === 'string'
-          ? payload.message
-          : '';
-
-        this.publishErrorMessage = backendMessage || 'No se pudo publicar en GitHub.';
-      }
-    });
+    this.editorInfoMessage = 'Archivo descargado. Guárdalo como src/assets/data.json y aplica los cambios donde corresponda.';
   }
 
   publishUpdatedDataToBlobs(): void {
@@ -427,13 +373,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   private clearEditorMessages(): void {
     this.editorInfoMessage = '';
     this.editorErrorMessage = '';
-  }
-
-  private clearPublishMessages(): void {
-    this.publishInfoMessage = '';
-    this.publishErrorMessage = '';
-    this.publishResultUrl = '';
-    this.publishResultSha = '';
   }
 
   private clearBlobsPublishMessages(): void {

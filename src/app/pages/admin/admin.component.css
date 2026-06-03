@@ -180,26 +180,6 @@
 	background: rgba(15, 34, 44, 0.9);
 }
 
-.publish-card {
-	margin-top: 0.75rem;
-	border-color: rgba(209, 185, 111, 0.35);
-}
-
-.publish-card button:disabled {
-	opacity: 0.7;
-	cursor: wait;
-}
-
-.commit-link {
-	margin: 0;
-}
-
-.commit-link a {
-	color: var(--gold);
-	text-decoration: underline;
-	text-underline-offset: 2px;
-}
-
 .blobs-card {
 	margin-top: 0.75rem;
 	border-color: rgba(100, 180, 200, 0.35);
@@ -208,11 +188,6 @@
 .blobs-card button:disabled {
 	opacity: 0.7;
 	cursor: wait;
-}
-
-.blobs-note {
-	font-size: 0.83rem;
-	margin: 0;
 }
 
 .instructions {
