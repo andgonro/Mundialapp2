@@ -132,6 +132,9 @@
 	padding: 0 0.7rem;
 	color: var(--text-main);
 	background: rgba(6, 18, 24, 0.9);
+	width: 100%;
+	box-sizing: border-box;
+	min-width: 0;
 }
 
 .score-row {
@@ -143,6 +146,7 @@
 .score-row > div {
 	display: grid;
 	gap: 0.35rem;
+	min-width: 0;
 }
 
 .status-note {
