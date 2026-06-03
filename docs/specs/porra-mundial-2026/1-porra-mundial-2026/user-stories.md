@@ -1,6 +1,6 @@
 # User Stories: Porra Mundial 2026
 
-**GitHub Issue:** [#1 — game developement](https://github.com/andgonro/porra-mundial-2026/issues/1)
+**GitHub Issue:** [#1 — game developement](https://github.com/andgonro/Mundialapp2/issues/1)
 
 ---
 
