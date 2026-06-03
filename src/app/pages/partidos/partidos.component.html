@@ -1,0 +1,58 @@
+<section class="page">
+	<header class="panel">
+		<h2 class="page-title">Partidos del Mundial</h2>
+		<p class="page-subtitle">
+			Calendario completo de 104 partidos. Los resultados se muestran desde el archivo de datos actualizado por el admin.
+		</p>
+	</header>
+
+	<section class="panel filter-panel" *ngIf="!isLoading && !errorMessage">
+		<label for="group-filter">Filtrar fase de grupos:</label>
+		<select id="group-filter" [(ngModel)]="selectedGroup" aria-label="Filtro de grupo">
+			<option *ngFor="let group of groupOptions" [ngValue]="group">
+				{{ group === 'TODOS' ? 'Todos los grupos' : 'Grupo ' + group }}
+			</option>
+		</select>
+	</section>
+
+	<div *ngIf="isLoading" class="state-box">Cargando partidos...</div>
+	<div *ngIf="!isLoading && errorMessage" class="state-box error">{{ errorMessage }}</div>
+
+	<section *ngIf="!isLoading && !errorMessage" class="stage-list">
+		<article class="panel stage-block" *ngFor="let stage of stageOrder">
+			<ng-container *ngIf="getMatchesForStage(stage).length > 0">
+				<div class="stage-head">
+					<h3>{{ stageHeading(stage) }}</h3>
+					<span class="chip">{{ getMatchesForStage(stage).length }} partidos</span>
+				</div>
+
+				<div class="match-list">
+					<article
+						class="match-card"
+						*ngFor="let match of getMatchesForStage(stage); trackBy: trackByMatchId"
+						[class.pending]="match.status !== 'FINISHED'">
+
+						<div class="line-top">
+							<span class="chip">#{{ match.id }}</span>
+							<span class="chip">{{ stageTag(match) }}</span>
+							<span class="muted">{{ match.date }} · {{ match.time }}</span>
+						</div>
+
+						<div class="line-main">
+							<p class="teams">
+								<span>{{ match.home_team }}</span>
+								<strong class="score">{{ formatScore(match) }}</strong>
+								<span>{{ match.away_team }}</span>
+							</p>
+							<span class="penalty" *ngIf="match.went_to_penalties && match.home_score !== null && match.away_score !== null">
+								(pen.)
+							</span>
+						</div>
+
+						<p class="muted stadium">{{ match.stadium }}</p>
+					</article>
+				</div>
+			</ng-container>
+		</article>
+	</section>
+</section>

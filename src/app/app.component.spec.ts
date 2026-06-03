@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'mundialapp2'`, () => {
+  it(`should have as title 'Porra Mundial 2026'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('mundialapp2');
+    expect(app.title).toEqual('Porra Mundial 2026');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('mundialapp2 app is running!');
+    expect(compiled.querySelector('.brand h1')?.textContent).toContain('Porra Mundial 2026');
   });
 });

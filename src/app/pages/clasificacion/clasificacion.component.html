@@ -1,0 +1,63 @@
+<section class="page">
+	<header class="panel">
+		<h2 class="page-title">Clasificación general</h2>
+		<p class="page-subtitle">
+			La puntuación total combina puntos de equipos (+3 victoria, +1 empate) y goles de tus 4 goleadores (+1 por gol).
+		</p>
+	</header>
+
+	<div *ngIf="isLoading" class="state-box">Cargando clasificación...</div>
+	<div *ngIf="!isLoading && errorMessage" class="state-box error">{{ errorMessage }}</div>
+
+	<section *ngIf="!isLoading && !errorMessage" class="cards">
+		<article class="panel standing-card" *ngFor="let standing of standings; trackBy: trackByPlayerId">
+			<div class="card-head">
+				<div class="identity">
+					<span class="rank">#{{ standing.rank }}</span>
+					<h3>{{ standing.playerId }}</h3>
+				</div>
+
+				<div class="points-box">
+					<span class="label">Total</span>
+					<strong>{{ standing.totalPoints }} pts</strong>
+				</div>
+			</div>
+
+			<div class="quick-split">
+				<span class="chip">Equipos: {{ standing.teamPoints }} pts</span>
+				<span class="chip">Goleadores: {{ standing.scorerPoints }} pts</span>
+			</div>
+
+			<button
+				type="button"
+				class="toggle-btn"
+				[attr.aria-expanded]="isExpanded(standing.playerId)"
+				(click)="toggleBreakdown(standing.playerId)">
+				{{ isExpanded(standing.playerId) ? 'Ocultar desglose' : 'Ver desglose' }}
+			</button>
+
+			<div class="breakdown" *ngIf="isExpanded(standing.playerId)">
+				<section class="breakdown-section">
+					<h4>Equipos</h4>
+					<ul>
+						<li *ngFor="let teamRow of standing.teamBreakdown">
+							<span>{{ teamRow.team }}</span>
+							<strong>{{ teamRow.points }} pts</strong>
+						</li>
+					</ul>
+				</section>
+
+				<section class="breakdown-section">
+					<h4>Goleadores</h4>
+					<ul>
+						<li *ngFor="let scorerRow of standing.scorerBreakdown">
+							<span>{{ scorerRow.scorer }}</span>
+							<small class="muted">{{ scorerRow.team }}</small>
+							<strong>{{ scorerRow.goals }} G / {{ scorerRow.points }} pts</strong>
+						</li>
+					</ul>
+				</section>
+			</div>
+		</article>
+	</section>
+</section>

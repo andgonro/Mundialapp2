@@ -1,0 +1,84 @@
+<section class="page">
+	<header class="panel">
+		<h2 class="page-title">Panel admin</h2>
+		<p class="page-subtitle">
+			Vista protegida para controlar el estado de la porra y actualizar resultados en el repositorio.
+		</p>
+	</header>
+
+	<div *ngIf="isLoading" class="state-box">Cargando panel de administración...</div>
+	<div *ngIf="!isLoading && loadError" class="state-box error">{{ loadError }}</div>
+
+	<section *ngIf="!isLoading && !loadError">
+		<article class="panel auth-panel" *ngIf="!isAuthenticated">
+			<h3>Acceso admin</h3>
+			<p class="muted">
+				Introduce la contraseña maestra del grupo para ver los partidos pendientes y las instrucciones de actualización.
+			</p>
+
+			<form (ngSubmit)="unlockAdmin()" class="auth-form">
+				<label for="admin-password">Contraseña</label>
+				<input
+					id="admin-password"
+					name="admin-password"
+					type="password"
+					[(ngModel)]="passwordInput"
+					autocomplete="current-password"
+					required>
+
+				<button type="submit" [disabled]="isCheckingPassword">
+					{{ isCheckingPassword ? 'Comprobando...' : 'Entrar' }}
+				</button>
+			</form>
+
+			<p class="state-box error" *ngIf="authError">{{ authError }}</p>
+		</article>
+
+		<section class="admin-grid" *ngIf="isAuthenticated">
+			<article class="panel">
+				<div class="section-head">
+					<h3>Partidos pendientes</h3>
+					<span class="chip">{{ pendingMatches.length }}</span>
+				</div>
+
+				<p *ngIf="pendingMatches.length === 0" class="state-box">No hay partidos pendientes.</p>
+
+				<ul class="pending-list" *ngIf="pendingMatches.length > 0">
+					<li *ngFor="let match of pendingMatches; trackBy: trackByMatchId">
+						<div>
+							<strong>#{{ match.id }} · {{ match.home_team }} vs {{ match.away_team }}</strong>
+							<small class="muted">{{ match.date }} · {{ match.time }} · {{ match.stage_label || match.stage }}</small>
+						</div>
+						<span class="chip">{{ formatScore(match) }}</span>
+					</li>
+				</ul>
+			</article>
+
+			<article class="panel">
+				<div class="section-head">
+					<h3>Clasificación actual</h3>
+					<span class="chip">Top 10</span>
+				</div>
+
+				<ol class="ranking-list">
+					<li *ngFor="let row of standings; trackBy: trackByPlayer">
+						<span>#{{ row.rank }} · {{ row.playerId }}</span>
+						<strong>{{ row.totalPoints }} pts</strong>
+					</li>
+				</ol>
+			</article>
+
+			<article class="panel full-width">
+				<h3>Cómo actualizar resultados</h3>
+				<ol class="instructions">
+					<li>Abre el repositorio en GitHub y entra en src/assets/data.json.</li>
+					<li>Edita home_score, away_score, status y goals del partido correspondiente.</li>
+					<li>En fase KO con penaltis, guarda el marcador de 120 minutos y marca went_to_penalties como true.</li>
+					<li>Actualiza también scorers_stats con los goles válidos (sin penaltis ni autogoles).</li>
+					<li>Haz commit en main con un mensaje claro, por ejemplo: "actualiza jornada 2".</li>
+					<li>Recarga la web para ver la clasificación recalculada al instante.</li>
+				</ol>
+			</article>
+		</section>
+	</section>
+</section>

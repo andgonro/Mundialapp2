@@ -1,1 +1,115 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+:root {
+	--bg-deep: #081317;
+	--bg-mid: #10222b;
+	--panel: #142a32;
+	--panel-soft: #1a3440;
+	--line: rgba(161, 205, 180, 0.28);
+	--text-main: #e8f7f0;
+	--text-muted: #a5c3b5;
+	--gold: #d1b96f;
+	--green: #68d89b;
+	--danger: #ff7a84;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	min-height: 100%;
+	font-family: 'Space Grotesk', sans-serif;
+	color: var(--text-main);
+	background:
+		radial-gradient(circle at 12% 8%, rgba(104, 216, 155, 0.14), transparent 36%),
+		radial-gradient(circle at 86% 5%, rgba(209, 185, 111, 0.13), transparent 34%),
+		linear-gradient(160deg, var(--bg-deep), var(--bg-mid));
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: 'Rajdhani', sans-serif;
+	margin: 0;
+	letter-spacing: 0.02em;
+}
+
+p {
+	margin: 0;
+}
+
+button,
+input,
+select {
+	font: inherit;
+}
+
+a {
+	color: inherit;
+}
+
+.page {
+	width: min(1080px, 100%);
+	margin: 0 auto;
+	padding: 1rem 0.85rem 2.2rem;
+}
+
+.panel {
+	background: linear-gradient(170deg, rgba(25, 49, 59, 0.96), rgba(17, 35, 45, 0.95));
+	border: 1px solid var(--line);
+	border-radius: 16px;
+	padding: 1rem;
+	box-shadow: 0 12px 26px rgba(3, 9, 12, 0.36);
+}
+
+.page-title {
+	font-size: clamp(1.4rem, 4vw, 2rem);
+}
+
+.page-subtitle {
+	margin-top: 0.35rem;
+	color: var(--text-muted);
+	font-size: 0.92rem;
+}
+
+.state-box {
+	margin-top: 1rem;
+	border-radius: 12px;
+	border: 1px solid var(--line);
+	padding: 0.9rem;
+	background: rgba(16, 34, 43, 0.75);
+	color: var(--text-muted);
+}
+
+.state-box.error {
+	border-color: rgba(255, 122, 132, 0.5);
+	color: #ffc5cb;
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 28px;
+	border-radius: 999px;
+	border: 1px solid var(--line);
+	padding: 0.15rem 0.65rem;
+	font-size: 0.8rem;
+	color: var(--text-muted);
+	background: rgba(13, 30, 38, 0.72);
+}
+
+.muted {
+	color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+	.page {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+}
