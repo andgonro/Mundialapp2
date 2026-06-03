@@ -140,6 +140,45 @@
 					<button type="button" (click)="downloadUpdatedData()">Descargar data.json actualizado</button>
 					<button type="button" class="btn-secondary" (click)="resetEditorChanges()">Reiniciar cambios</button>
 				</div>
+
+				<section class="editor-card publish-card">
+					<h4>Publicar en GitHub</h4>
+					<p class="muted">
+						Envía el data.json editado a Netlify Function para crear un commit automático.
+					</p>
+
+					<label for="publish-secret">Clave de publicación</label>
+					<input
+						id="publish-secret"
+						name="publish-secret"
+						type="password"
+						[(ngModel)]="publishSecretInput"
+						autocomplete="off">
+
+					<label for="commit-message">Mensaje de commit</label>
+					<input
+						id="commit-message"
+						name="commit-message"
+						type="text"
+						maxlength="120"
+						[(ngModel)]="commitMessageInput">
+
+					<button
+						type="button"
+						(click)="publishUpdatedDataToGitHub()"
+						[disabled]="isPublishingToGitHub">
+						{{ isPublishingToGitHub ? 'Publicando...' : 'Publicar en GitHub' }}
+					</button>
+
+					<p class="state-box" *ngIf="publishInfoMessage">{{ publishInfoMessage }}</p>
+					<p class="state-box error" *ngIf="publishErrorMessage">{{ publishErrorMessage }}</p>
+
+					<p class="muted commit-link" *ngIf="publishResultUrl">
+						<a [href]="publishResultUrl" target="_blank" rel="noopener">
+							Ver commit {{ publishResultSha || publishResultUrl }}
+						</a>
+					</p>
+				</section>
 			</article>
 
 			<article class="panel">
@@ -179,9 +218,8 @@
 				<h3>Cómo publicar los cambios</h3>
 				<ol class="instructions">
 					<li>Usa el editor de arriba para actualizar partidos y goleadores.</li>
-					<li>Pulsa “Descargar data.json actualizado”.</li>
-					<li>En GitHub, reemplaza el archivo src/assets/data.json por el descargado.</li>
-					<li>Haz commit en main con un mensaje claro, por ejemplo: "actualiza jornada 2".</li>
+					<li>Para publicar directo, introduce la clave y pulsa “Publicar en GitHub”.</li>
+					<li>Si no tienes clave, descarga data.json y súbelo manualmente al repo.</li>
 					<li>Recarga la web para ver la clasificación recalculada al instante.</li>
 				</ol>
 			</article>

@@ -1,9 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { GameData, Match, MatchStatus, PlayerStanding } from '../../models/game-data.model';
 import { DataService } from '../../services/data.service';
 import { ScoringService } from '../../services/scoring.service';
+
+interface PublishDataResponse {
+  ok: boolean;
+  message?: string;
+  commitUrl?: string;
+  commitSha?: string;
+}
 
 @Component({
   selector: 'app-admin',
@@ -42,13 +50,22 @@ export class AdminComponent implements OnInit, OnDestroy {
   editorInfoMessage = '';
   editorErrorMessage = '';
 
+  publishSecretInput = '';
+  commitMessageInput = 'actualiza resultados';
+  isPublishingToGitHub = false;
+  publishInfoMessage = '';
+  publishErrorMessage = '';
+  publishResultUrl = '';
+  publishResultSha = '';
+
   private dataSubscription?: Subscription;
   private originalData: GameData | null = null;
   private editableData: GameData | null = null;
 
   constructor(
     private readonly dataService: DataService,
-    private readonly scoringService: ScoringService
+    private readonly scoringService: ScoringService,
+    private readonly http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -259,6 +276,54 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.editorInfoMessage = 'Archivo descargado. Súbelo al repo como src/assets/data.json y haz commit.';
   }
 
+  publishUpdatedDataToGitHub(): void {
+    this.clearPublishMessages();
+
+    if (!this.editableData) {
+      this.publishErrorMessage = 'No hay datos para publicar.';
+      return;
+    }
+
+    const adminSecret = this.publishSecretInput.trim();
+    if (!adminSecret) {
+      this.publishErrorMessage = 'Introduce la clave de publicación.';
+      return;
+    }
+
+    const commitMessage = this.commitMessageInput.trim() || 'actualiza resultados';
+    this.isPublishingToGitHub = true;
+
+    this.http.post<PublishDataResponse>(
+      '/.netlify/functions/publish-data',
+      {
+        updatedData: this.editableData,
+        commitMessage
+      },
+      {
+        headers: {
+          'x-admin-secret': adminSecret
+        }
+      }
+    ).subscribe({
+      next: (response) => {
+        this.isPublishingToGitHub = false;
+        this.publishInfoMessage = response.message || 'Publicación completada.';
+        this.publishResultUrl = response.commitUrl || '';
+        this.publishResultSha = response.commitSha || '';
+        this.publishSecretInput = '';
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isPublishingToGitHub = false;
+        const payload = error.error as { message?: unknown } | null;
+        const backendMessage = payload && typeof payload.message === 'string'
+          ? payload.message
+          : '';
+
+        this.publishErrorMessage = backendMessage || 'No se pudo publicar en GitHub.';
+      }
+    });
+  }
+
   private async hashValue(value: string): Promise<string> {
     const bytes = new TextEncoder().encode(value);
     const hashBuffer = await crypto.subtle.digest('SHA-256', bytes);
@@ -322,6 +387,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   private clearEditorMessages(): void {
     this.editorInfoMessage = '';
     this.editorErrorMessage = '';
+  }
+
+  private clearPublishMessages(): void {
+    this.publishInfoMessage = '';
+    this.publishErrorMessage = '';
+    this.publishResultUrl = '';
+    this.publishResultSha = '';
   }
 
   private cloneData(data: GameData): GameData {

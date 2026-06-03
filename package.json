@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
     "build": "set NODE_OPTIONS=--openssl-legacy-provider && ng build",
+    "build:netlify": "NODE_OPTIONS=--openssl-legacy-provider ng build",
     "watch": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration development",
     "test": "ng test"
   },
