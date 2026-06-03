@@ -1,167 +1,167 @@
-{
+﻿{
   "players": [
     {
       "id": "IOKIN",
       "teams": [
-        "Canada",
+        "Canadá",
         "England",
-        "Morocco",
-        "South Africa"
+        "Marruecos",
+        "Sudafrica"
       ],
       "scorers": [
-        "K. Mbappé",
-        "Raphinha",
-        "Sorloth",
-        "M. Gregoritsch"
+        "K. Mbappé (Francia)",
+        "Raphinha (Brasil)",
+        "Sorloth (Noruega)",
+        "M. Gregoritsch (Austria)"
       ]
     },
     {
       "id": "PIWI",
       "teams": [
-        "Brazil",
+        "Brasil",
         "Mexico",
         "Australia",
-        "Qatar"
+        "Catar"
       ],
       "scorers": [
-        "Harry Kane",
-        "Julián Álvarez",
-        "C. Pulisic",
-        "Ferran Torres"
+        "Harry Kane (England)",
+        "Julián Álvarez (Argentina)",
+        "C. Pulisic (EE. UU.)",
+        "Ferran Torres (España)"
       ]
     },
     {
       "id": "ISUSKO",
       "teams": [
-        "United States",
+        "Estados Unidos",
         "Ecuador",
-        "Japan",
-        "Scotland"
+        "Japón",
+        "Escocia"
       ],
       "scorers": [
-        "Lionel Messi",
-        "Kai Havertz",
-        "Lois Openda",
-        "Arda Güler"
+        "Lionel Messi (Argentina)",
+        "Kai Havertz (Alemania)",
+        "Lois Openda (Bélgica)",
+        "Arda Güler (Turquía)"
       ]
     },
     {
       "id": "AMORRORTU",
       "teams": [
-        "Germany",
-        "Iran",
+        "Alemania",
+        "Irán",
         "Uruguay",
         "Paraguay"
       ],
       "scorers": [
-        "Bukayo Saka",
-        "O. Dembélé",
-        "Bruno Fernandes",
-        "F. Balogun"
+        "Bukayo Saka (England)",
+        "O. Dembélé (Francia)",
+        "Bruno Fernandes (Portugal)",
+        "F. Balogun (EE. UU.)"
       ]
     },
     {
       "id": "PENFOR",
       "teams": [
-        "Netherlands",
+        "Países Bajos",
         "Senegal",
-        "Ivory Coast",
-        "Czechia"
+        "Costa de Marfil",
+        "Chequia"
       ],
       "scorers": [
-        "Vinícius Jr.",
-        "Y. En-Nesyri",
-        "Viktor Gyökeres",
-        "Patrik Schick"
+        "Vinícius Jr. (Brasil)",
+        "Y. En-Nesyri (Marruecos)",
+        "Viktor Gyökeres (Suecia)",
+        "Patrik Schick (Chequia)"
       ]
     },
     {
       "id": "PLUTS",
       "teams": [
-        "Belgium",
+        "Bélgica",
         "Austria",
-        "Tunisia",
-        "Bosnia and Herzegovina"
+        "Túnez",
+        "Bosnia y Herzegovina"
       ],
       "scorers": [
-        "Erling Haaland",
-        "Darwin Núñez",
-        "Florian Wirtz",
-        "Brahim Díaz"
+        "Erling Haaland (Noruega)",
+        "Darwin Núñez (Uruguay)",
+        "Florian Wirtz (Alemania)",
+        "Brahim Díaz (Marruecos)"
       ]
     },
     {
       "id": "LUISON",
       "teams": [
-        "Spain",
+        "España",
         "Colombia",
-        "Egypt",
-        "Turkey"
+        "Egipto",
+        "Turquía"
       ],
       "scorers": [
-        "Lamine Yamal",
-        "Cody Gakpo",
-        "Andrej Kramarić",
-        "Alexander Isak"
+        "Lamine Yamal (España)",
+        "Cody Gakpo (Países Bajos)",
+        "Andrej Kramarić (Croacia)",
+        "Alexander Isak (Suecia)"
       ]
     },
     {
       "id": "TXONTXE",
       "teams": [
-        "France",
-        "Croatia",
-        "Saudi Arabia",
-        "Sweden"
+        "Francia",
+        "Croacia",
+        "Arabia Saudí",
+        "Suecia"
       ],
       "scorers": [
-        "Lautaro Martínez",
-        "Cristiano Ronaldo",
-        "Oyarzabal",
-        "Enner Valencia"
+        "Lautaro Martínez (Argentina)",
+        "Cristiano Ronaldo (Portugal)",
+        "Oyarzabal (España)",
+        "Enner Valencia (Ecuador)"
       ]
     },
     {
       "id": "SOLA",
       "teams": [
         "Argentina",
-        "South Korea",
-        "Norway",
-        "DR Congo"
+        "Corea del Sur",
+        "Noruega",
+        "RD Congo"
       ],
       "scorers": [
-        "Romelu Lukaku",
-        "Jamal Musiala",
-        "Jonathan David",
-        "Kaoru Mitoma"
+        "Romelu Lukaku (Bélgica)",
+        "Jamal Musiala (Alemania)",
+        "Jonathan David (Canadá)",
+        "Kaoru Mitoma (Japón)"
       ]
     },
     {
       "id": "POLACO",
       "teams": [
         "Portugal",
-        "Switzerland",
-        "Algeria",
+        "Suiza",
+        "Argelia",
         "Ghana"
       ],
       "scorers": [
-        "Santiago Giménez",
-        "Luis Díaz",
-        "Breel Embolo",
-        "Rafael Leão"
+        "Santiago Giménez (Mexico)",
+        "Luis Díaz (Colombia)",
+        "Breel Embolo (Suiza)",
+        "Rafael Leão (Portugal)"
       ]
     }
   ],
   "scorers_stats": {
     "K. Mbappé": {
-      "team": "France",
+      "team": "Francia",
       "goals": 0
     },
     "Raphinha": {
-      "team": "Brazil",
+      "team": "Brasil",
       "goals": 0
     },
     "Sorloth": {
-      "team": "Norway",
+      "team": "Noruega",
       "goals": 0
     },
     "M. Gregoritsch": {
@@ -177,11 +177,11 @@
       "goals": 0
     },
     "C. Pulisic": {
-      "team": "USA",
+      "team": "EE. UU.",
       "goals": 0
     },
     "Ferran Torres": {
-      "team": "Spain",
+      "team": "España",
       "goals": 0
     },
     "Lionel Messi": {
@@ -189,15 +189,15 @@
       "goals": 0
     },
     "Kai Havertz": {
-      "team": "Germany",
+      "team": "Alemania",
       "goals": 0
     },
     "Lois Openda": {
-      "team": "Belgium",
+      "team": "Bélgica",
       "goals": 0
     },
     "Arda Güler": {
-      "team": "Turkey",
+      "team": "Turquía",
       "goals": 0
     },
     "Bukayo Saka": {
@@ -205,7 +205,7 @@
       "goals": 0
     },
     "O. Dembélé": {
-      "team": "France",
+      "team": "Francia",
       "goals": 0
     },
     "Bruno Fernandes": {
@@ -213,27 +213,27 @@
       "goals": 0
     },
     "F. Balogun": {
-      "team": "USA",
+      "team": "EE. UU.",
       "goals": 0
     },
     "Vinícius Jr.": {
-      "team": "Brazil",
+      "team": "Brasil",
       "goals": 0
     },
     "Y. En-Nesyri": {
-      "team": "Morocco",
+      "team": "Marruecos",
       "goals": 0
     },
     "Viktor Gyökeres": {
-      "team": "Sweden",
+      "team": "Suecia",
       "goals": 0
     },
     "Patrik Schick": {
-      "team": "Czechia",
+      "team": "Chequia",
       "goals": 0
     },
     "Erling Haaland": {
-      "team": "Norway",
+      "team": "Noruega",
       "goals": 0
     },
     "Darwin Núñez": {
@@ -241,27 +241,27 @@
       "goals": 0
     },
     "Florian Wirtz": {
-      "team": "Germany",
+      "team": "Alemania",
       "goals": 0
     },
     "Brahim Díaz": {
-      "team": "Morocco",
+      "team": "Marruecos",
       "goals": 0
     },
     "Lamine Yamal": {
-      "team": "Spain",
+      "team": "España",
       "goals": 0
     },
     "Cody Gakpo": {
-      "team": "Netherlands",
+      "team": "Países Bajos",
       "goals": 0
     },
     "Andrej Kramarić": {
-      "team": "Croatia",
+      "team": "Croacia",
       "goals": 0
     },
     "Alexander Isak": {
-      "team": "Sweden",
+      "team": "Suecia",
       "goals": 0
     },
     "Lautaro Martínez": {
@@ -273,7 +273,7 @@
       "goals": 0
     },
     "Oyarzabal": {
-      "team": "Spain",
+      "team": "España",
       "goals": 0
     },
     "Enner Valencia": {
@@ -281,19 +281,19 @@
       "goals": 0
     },
     "Romelu Lukaku": {
-      "team": "Belgium",
+      "team": "Bélgica",
       "goals": 0
     },
     "Jamal Musiala": {
-      "team": "Germany",
+      "team": "Alemania",
       "goals": 0
     },
     "Jonathan David": {
-      "team": "Canada",
+      "team": "Canadá",
       "goals": 0
     },
     "Kaoru Mitoma": {
-      "team": "Japan",
+      "team": "Japón",
       "goals": 0
     },
     "Santiago Giménez": {
@@ -305,7 +305,7 @@
       "goals": 0
     },
     "Breel Embolo": {
-      "team": "Switzerland",
+      "team": "Suiza",
       "goals": 0
     },
     "Rafael Leão": {
@@ -322,10 +322,10 @@
       "date": "2026-06-11",
       "time": "21:00",
       "home_team": "Mexico",
-      "away_team": "South Africa",
+      "away_team": "Sudafrica",
       "home_score": null,
       "away_score": null,
-      "stadium": "Estadio Ciudad de México",
+      "stadium": "Estadio Ciudad de Mexico",
       "status": "SCHEDULED",
       "went_to_penalties": false,
       "goals": []
@@ -337,8 +337,8 @@
       "group": "A",
       "date": "2026-06-12",
       "time": "04:00",
-      "home_team": "South Korea",
-      "away_team": "Czechia",
+      "home_team": "Corea del Sur",
+      "away_team": "Chequia",
       "home_score": null,
       "away_score": null,
       "stadium": "Estadio Guadalajara",
@@ -353,8 +353,8 @@
       "group": "B",
       "date": "2026-06-12",
       "time": "21:00",
-      "home_team": "Canada",
-      "away_team": "Bosnia and Herzegovina",
+      "home_team": "Canadá",
+      "away_team": "Bosnia y Herzegovina",
       "home_score": null,
       "away_score": null,
       "stadium": "Estadio de Toronto",
@@ -369,7 +369,7 @@
       "group": "D",
       "date": "2026-06-13",
       "time": "03:00",
-      "home_team": "USA",
+      "home_team": "EE. UU.",
       "away_team": "Paraguay",
       "home_score": null,
       "away_score": null,
@@ -385,7 +385,7 @@
       "group": "B",
       "date": "2026-06-13",
       "time": "21:00",
-      "home_team": "Qatar",
+      "home_team": "Catar",
       "away_team": "Suiza",
       "home_score": null,
       "away_score": null,
@@ -610,7 +610,7 @@
       "date": "2026-06-17",
       "time": "03:00",
       "home_team": "Argentina",
-      "away_team": "Algelia",
+      "away_team": "Argelia",
       "home_score": null,
       "away_score": null,
       "stadium": "Estadio Kansas City",
@@ -693,7 +693,7 @@
       "away_team": "Colombia",
       "home_score": null,
       "away_score": null,
-      "stadium": "Estadio Ciudad de México",
+      "stadium": "Estadio Ciudad de Mexico",
       "status": "SCHEDULED",
       "went_to_penalties": false,
       "goals": []
@@ -753,8 +753,8 @@
       "group": "A",
       "date": "2026-06-19",
       "time": "03:00",
-      "home_team": "México",
-      "away_team": "South Korea",
+      "home_team": "Mexico",
+      "away_team": "Corea del Sur",
       "home_score": null,
       "away_score": null,
       "stadium": "Estadio Guadalajara",
@@ -769,7 +769,7 @@
       "group": "D",
       "date": "2026-06-19",
       "time": "21:00",
-      "home_team": "USA",
+      "home_team": "EE. UU.",
       "away_team": "Australia",
       "home_score": null,
       "away_score": null,
@@ -1010,7 +1010,7 @@
       "date": "2026-06-23",
       "time": "05:00",
       "home_team": "Jordania",
-      "away_team": "Algelia",
+      "away_team": "Argelia",
       "home_score": null,
       "away_score": null,
       "stadium": "Estadio de la Bahía de San Francisco",
@@ -1154,10 +1154,10 @@
       "date": "2026-06-25",
       "time": "03:00",
       "home_team": "Chequia",
-      "away_team": "México",
+      "away_team": "Mexico",
       "home_score": null,
       "away_score": null,
-      "stadium": "Estadio Ciudad de México",
+      "stadium": "Estadio Ciudad de Mexico",
       "status": "SCHEDULED",
       "went_to_penalties": false,
       "goals": []
@@ -1170,7 +1170,7 @@
       "date": "2026-06-25",
       "time": "03:00",
       "home_team": "Sudáfrica",
-      "away_team": "South Korea",
+      "away_team": "Corea del Sur",
       "home_score": null,
       "away_score": null,
       "stadium": "Estadio Monterrey",
@@ -1250,7 +1250,7 @@
       "date": "2026-06-26",
       "time": "04:00",
       "home_team": "Turquía",
-      "away_team": "USA",
+      "away_team": "EE. UU.",
       "home_score": null,
       "away_score": null,
       "stadium": "Estadio Los Angeles",
@@ -1573,7 +1573,7 @@
       "away_team": "3CEFHI",
       "home_score": null,
       "away_score": null,
-      "stadium": "Estadio Ciudad de México",
+      "stadium": "Estadio Ciudad de Mexico",
       "status": "SCHEDULED",
       "went_to_penalties": false,
       "goals": []
@@ -1781,7 +1781,7 @@
       "away_team": "W80",
       "home_score": null,
       "away_score": null,
-      "stadium": "Estadio Ciudad de México",
+      "stadium": "Estadio Ciudad de Mexico",
       "status": "SCHEDULED",
       "went_to_penalties": false,
       "goals": []
