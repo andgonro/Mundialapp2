@@ -145,6 +145,75 @@
 	gap: 0.35rem;
 }
 
+.status-note {
+	margin: 0;
+	font-size: 0.82rem;
+}
+
+.penalty-winner-block {
+	display: grid;
+	gap: 0.4rem;
+}
+
+.goal-editor-grid {
+	display: grid;
+	gap: 0.6rem;
+	margin: 0.25rem 0;
+}
+
+.goal-side-card {
+	border: 1px solid rgba(165, 195, 181, 0.24);
+	border-radius: 10px;
+	padding: 0.7rem;
+	background: rgba(5, 16, 22, 0.75);
+	display: grid;
+	gap: 0.45rem;
+}
+
+.goal-side-card h5 {
+	margin: 0;
+	font-size: 0.95rem;
+	color: var(--gold);
+}
+
+.goal-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 0.35rem;
+}
+
+.goal-list li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.35rem 0;
+	border-bottom: 1px solid rgba(165, 195, 181, 0.16);
+	font-size: 0.84rem;
+}
+
+.goal-list li:last-child {
+	border-bottom: 0;
+}
+
+.btn-link {
+	min-height: 36px;
+	padding: 0 0.55rem;
+	border-radius: 8px;
+	border: 1px solid rgba(165, 195, 181, 0.4);
+	background: rgba(15, 34, 44, 0.9);
+	color: var(--text-main);
+	cursor: pointer;
+	font-size: 0.8rem;
+}
+
+.no-scorers {
+	margin: 0;
+	font-size: 0.8rem;
+}
+
 .check-row {
 	display: inline-flex;
 	align-items: center;
@@ -166,6 +235,17 @@
 	background: rgba(209, 185, 111, 0.2);
 	color: var(--text-main);
 	cursor: pointer;
+}
+
+.editor-card .btn-secondary {
+	border-color: var(--line);
+	background: rgba(15, 34, 44, 0.9);
+}
+
+.advanced-editor {
+	display: grid;
+	gap: 0.5rem;
+	margin-top: 0.25rem;
 }
 
 .editor-actions {
@@ -207,6 +287,10 @@
 	}
 
 	.editor-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.goal-editor-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }

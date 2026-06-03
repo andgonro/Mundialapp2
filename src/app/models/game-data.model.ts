@@ -1,4 +1,5 @@
 export type MatchStatus = 'SCHEDULED' | 'IN_PLAY' | 'FINISHED';
+export type MatchSide = 'home' | 'away';
 
 export type GoalType = 'regular' | 'extra_time' | 'own_goal' | 'assist' | 'penalty_shootout';
 
@@ -32,6 +33,7 @@ export interface Match {
 	stadium: string;
 	status: MatchStatus;
 	went_to_penalties?: boolean;
+	penalty_winner_side?: MatchSide;
 	goals?: MatchGoal[];
 }
 

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   GameData,
   Match,
+  MatchSide,
   PlayerAssignment,
   PlayerStanding,
   ScorerPointsBreakdown,
@@ -296,7 +297,44 @@ export class ScoringService {
     });
   }
 
+  canonicalizeTeamName(teamName: string): string {
+    return this.canonicalTeamName(teamName);
+  }
+
+  resolveMatchWinnerSide(match: Match): MatchSide | null {
+    if (match.home_score === null || match.away_score === null) {
+      return null;
+    }
+
+    const homeScore = Number(match.home_score);
+    const awayScore = Number(match.away_score);
+
+    if (!Number.isFinite(homeScore) || !Number.isFinite(awayScore)) {
+      return null;
+    }
+
+    if (match.went_to_penalties) {
+      return match.penalty_winner_side ?? null;
+    }
+
+    if (homeScore === awayScore) {
+      return null;
+    }
+
+    return homeScore > awayScore ? 'home' : 'away';
+  }
+
   private resolveScorerGoals(data: GameData): Map<string, number> {
+    const goalsFromStats = new Map<string, number>();
+
+    Object.entries(data.scorers_stats).forEach(([scorerName, scorerStat]) => {
+      const parsedGoals = Number(scorerStat.goals);
+      goalsFromStats.set(
+        this.normalizeKey(scorerName),
+        Number.isFinite(parsedGoals) ? Math.max(0, parsedGoals) : 0
+      );
+    });
+
     const eventGoals = new Map<string, number>();
 
     for (const match of data.matches) {
@@ -311,21 +349,17 @@ export class ScoringService {
       }
     }
 
-    if (eventGoals.size > 0) {
-      return eventGoals;
+    if (eventGoals.size === 0) {
+      return goalsFromStats;
     }
 
-    const goalsFromStats = new Map<string, number>();
+    const mergedGoals = new Map(goalsFromStats);
 
-    Object.entries(data.scorers_stats).forEach(([scorerName, scorerStat]) => {
-      const parsedGoals = Number(scorerStat.goals);
-      goalsFromStats.set(
-        this.normalizeKey(scorerName),
-        Number.isFinite(parsedGoals) ? Math.max(0, parsedGoals) : 0
-      );
+    eventGoals.forEach((value, scorerKey) => {
+      mergedGoals.set(scorerKey, value);
     });
 
-    return goalsFromStats;
+    return mergedGoals;
   }
 
   private buildScorerDetails(data: GameData): Map<string, { name: string; team: string }> {

@@ -42,7 +42,7 @@
 				</div>
 
 				<p class="muted">
-					Actualiza partido y goles aquí, revisa la clasificación en vivo y prepara un data.json actualizado.
+					Selecciona un partido, actualiza marcador y goleadores del mismo panel, y guarda cambios en Blobs.
 				</p>
 
 				<div class="editor-grid">
@@ -85,51 +85,181 @@
 							</div>
 						</div>
 
-						<label for="match-status">Estado</label>
-						<select
-							id="match-status"
-							name="match-status"
-							[(ngModel)]="matchStatusInput">
-							<option *ngFor="let status of statusOptions" [ngValue]="status.value">{{ status.label }}</option>
-						</select>
+						<p class="muted status-note">
+							Al aplicar un marcador válido, el estado pasa automáticamente a <strong>Finalizado</strong>.
+						</p>
 
 						<label class="check-row" for="went-to-penalties">
 							<input
 								id="went-to-penalties"
 								name="went-to-penalties"
 								type="checkbox"
-								[(ngModel)]="matchWentToPenaltiesInput">
+								[(ngModel)]="matchWentToPenaltiesInput"
+								(ngModelChange)="onPenaltiesToggleChange()">
 							Fue a penaltis
 						</label>
+
+						<div class="penalty-winner-block" *ngIf="matchWentToPenaltiesInput && isSelectedKnockoutMatch">
+							<label for="penalty-winner-side">Ganador en penaltis</label>
+							<select
+								id="penalty-winner-side"
+								name="penalty-winner-side"
+								[(ngModel)]="matchPenaltyWinnerInput">
+								<option [ngValue]="''">Selecciona el ganador</option>
+								<option [ngValue]="'home'">{{ selectedMatchHomeTeam || 'Local' }}</option>
+								<option [ngValue]="'away'">{{ selectedMatchAwayTeam || 'Visitante' }}</option>
+							</select>
+						</div>
+
+						<div class="goal-editor-grid">
+							<section class="goal-side-card">
+								<h5>Goles {{ selectedMatchHomeTeam || 'Local' }}</h5>
+
+								<label for="home-goal-scorer">Goleador local</label>
+								<select
+									id="home-goal-scorer"
+									name="home-goal-scorer"
+									[(ngModel)]="selectedHomeGoalScorer"
+									[disabled]="homeTeamScorers.length === 0">
+									<option [ngValue]="''">
+										{{ homeTeamScorers.length > 0 ? 'Selecciona goleador' : 'Sin goleadores disponibles' }}
+									</option>
+									<option
+										*ngFor="let scorer of homeTeamScorers; trackBy: trackByScorerName"
+										[ngValue]="scorer">
+										{{ scorer }}
+									</option>
+								</select>
+
+								<label for="home-goal-type">Tipo de gol</label>
+								<select
+									id="home-goal-type"
+									name="home-goal-type"
+									[(ngModel)]="homeGoalTypeInput"
+									[disabled]="homeTeamScorers.length === 0">
+									<option
+										*ngFor="let option of goalTypeOptions"
+										[ngValue]="option.value">
+										{{ option.label }}
+									</option>
+								</select>
+
+								<button
+									type="button"
+									(click)="addGoalForSelectedMatch('home')"
+									[disabled]="homeTeamScorers.length === 0">
+									Añadir gol local
+								</button>
+
+								<p class="muted no-scorers" *ngIf="homeTeamScorers.length === 0">
+									No hay goleadores disponibles para este equipo.
+								</p>
+
+								<ul class="goal-list" *ngIf="getGoalsForSelectedMatchSide('home').length > 0">
+									<li *ngFor="let goalEntry of getGoalsForSelectedMatchSide('home'); trackBy: trackByGoalIndex">
+										<span>{{ goalEntry.goal.scorer }} · {{ getGoalTypeLabel(goalEntry.goal.type) }}</span>
+										<button
+											type="button"
+											class="btn-link"
+											(click)="removeGoalFromSelectedMatch(goalEntry.index)">
+											Quitar
+										</button>
+									</li>
+								</ul>
+							</section>
+
+							<section class="goal-side-card">
+								<h5>Goles {{ selectedMatchAwayTeam || 'Visitante' }}</h5>
+
+								<label for="away-goal-scorer">Goleador visitante</label>
+								<select
+									id="away-goal-scorer"
+									name="away-goal-scorer"
+									[(ngModel)]="selectedAwayGoalScorer"
+									[disabled]="awayTeamScorers.length === 0">
+									<option [ngValue]="''">
+										{{ awayTeamScorers.length > 0 ? 'Selecciona goleador' : 'Sin goleadores disponibles' }}
+									</option>
+									<option
+										*ngFor="let scorer of awayTeamScorers; trackBy: trackByScorerName"
+										[ngValue]="scorer">
+										{{ scorer }}
+									</option>
+								</select>
+
+								<label for="away-goal-type">Tipo de gol</label>
+								<select
+									id="away-goal-type"
+									name="away-goal-type"
+									[(ngModel)]="awayGoalTypeInput"
+									[disabled]="awayTeamScorers.length === 0">
+									<option
+										*ngFor="let option of goalTypeOptions"
+										[ngValue]="option.value">
+										{{ option.label }}
+									</option>
+								</select>
+
+								<button
+									type="button"
+									(click)="addGoalForSelectedMatch('away')"
+									[disabled]="awayTeamScorers.length === 0">
+									Añadir gol visitante
+								</button>
+
+								<p class="muted no-scorers" *ngIf="awayTeamScorers.length === 0">
+									No hay goleadores disponibles para este equipo.
+								</p>
+
+								<ul class="goal-list" *ngIf="getGoalsForSelectedMatchSide('away').length > 0">
+									<li *ngFor="let goalEntry of getGoalsForSelectedMatchSide('away'); trackBy: trackByGoalIndex">
+										<span>{{ goalEntry.goal.scorer }} · {{ getGoalTypeLabel(goalEntry.goal.type) }}</span>
+										<button
+											type="button"
+											class="btn-link"
+											(click)="removeGoalFromSelectedMatch(goalEntry.index)">
+											Quitar
+										</button>
+									</li>
+								</ul>
+							</section>
+						</div>
 
 						<button type="button" (click)="applyMatchUpdate()">Aplicar cambios del partido</button>
 					</section>
 
 					<section class="editor-card">
-						<h4>Actualizar goleador</h4>
+						<h4>Ajuste manual de goleadores</h4>
+						<p class="muted">Modo avanzado para correcciones puntuales fuera del flujo por partido.</p>
 
-						<label for="scorer-select">Goleador</label>
-						<select
-							id="scorer-select"
-							name="scorer-select"
-							[(ngModel)]="selectedScorerName"
-							(ngModelChange)="onScorerSelectionChange()">
-							<option [ngValue]="''">Selecciona un goleador</option>
-							<option *ngFor="let scorer of allScorers; trackBy: trackByScorerName" [ngValue]="scorer">
-								{{ scorer }}
-							</option>
-						</select>
+						<button type="button" class="btn-secondary" (click)="toggleAdvancedScorerEditor()">
+							{{ showAdvancedScorerEditor ? 'Ocultar ajuste manual' : 'Mostrar ajuste manual' }}
+						</button>
 
-						<label for="scorer-goals">Goles totales</label>
-						<input
-							id="scorer-goals"
-							name="scorer-goals"
-							type="number"
-							min="0"
-							step="1"
-							[(ngModel)]="scorerGoalsInput">
+						<div class="advanced-editor" *ngIf="showAdvancedScorerEditor">
+							<label for="scorer-select">Goleador</label>
+							<select
+								id="scorer-select"
+								name="scorer-select"
+								[(ngModel)]="selectedScorerName"
+								(ngModelChange)="onScorerSelectionChange()">
+								<option [ngValue]="''">Selecciona un goleador</option>
+								<option *ngFor="let scorer of allScorers; trackBy: trackByScorerName" [ngValue]="scorer">
+									{{ scorer }}
+								</option>
+							</select>
 
-						<button type="button" (click)="applyScorerUpdate()">Aplicar goles del goleador</button>
+							<label for="scorer-goals">Goles totales</label>
+							<input
+								id="scorer-goals"
+								name="scorer-goals"
+								type="number"
+								min="0"
+								step="1"
+								[(ngModel)]="scorerGoalsInput">
+
+							<button type="button" (click)="applyScorerUpdate()">Aplicar goles manualmente</button>
+						</div>
 					</section>
 				</div>
 
@@ -141,7 +271,9 @@
 				</div>
 
 				<section class="editor-card blobs-card">
-					
+					<h4>Publicar cambios en Blobs</h4>
+					<p class="muted">Guarda todos los cambios del editor en Netlify Blobs.</p>
+
 					<label for="blobs-publish-secret">Clave de publicación</label>
 					<input
 						id="blobs-publish-secret"
@@ -198,8 +330,10 @@
 			<article class="panel full-width">
 				<h3>Cómo publicar los cambios</h3>
 				<ol class="instructions">
-					<li>Usa el editor de arriba para actualizar partidos y goleadores.</li>
-					<li>Introduce la clave y pulsa "Publicar" para guardar los datos actualizados.</li>
+					<li>Selecciona partido, actualiza marcador y registra goleadores en el mismo bloque.</li>
+					<li>Si el cruce acaba en penaltis, marca la casilla y elige ganador para el avance.</li>
+					<li>Pulsa "Aplicar cambios del partido" para guardar resultado y estado finalizado.</li>
+					<li>Introduce la clave y pulsa "Publicar Actualización" para guardar los datos en Blobs.</li>
 					<li>Recarga la web para ver la clasificación recalculada al instante.</li>
 				</ol>
 			</article>

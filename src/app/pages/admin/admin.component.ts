@@ -2,15 +2,31 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { GameData, Match, MatchStatus, PlayerStanding } from '../../models/game-data.model';
+import {
+  GameData,
+  GoalType,
+  Match,
+  MatchGoal,
+  MatchSide,
+  PlayerStanding
+} from '../../models/game-data.model';
 import { DataService } from '../../services/data.service';
 import { ScoringService } from '../../services/scoring.service';
 
 interface PublishDataResponse {
   ok: boolean;
   message?: string;
-  commitUrl?: string;
-  commitSha?: string;
+}
+
+interface GoalEntryView {
+  index: number;
+  goal: MatchGoal;
+}
+
+interface ProgressTarget {
+  targetMatchId: number;
+  targetSide: MatchSide;
+  token: 'W' | 'RU';
 }
 
 @Component({
@@ -19,10 +35,9 @@ interface PublishDataResponse {
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit, OnDestroy {
-  readonly statusOptions: Array<{ value: MatchStatus; label: string }> = [
-    { value: 'SCHEDULED', label: 'Programado' },
-    { value: 'IN_PLAY', label: 'En juego' },
-    { value: 'FINISHED', label: 'Finalizado' }
+  readonly goalTypeOptions: Array<{ value: GoalType; label: string }> = [
+    { value: 'regular', label: 'Gol en tiempo reglamentario' },
+    { value: 'extra_time', label: 'Gol en prórroga' }
   ];
 
   isLoading = true;
@@ -41,11 +56,22 @@ export class AdminComponent implements OnInit, OnDestroy {
   selectedMatchId: number | null = null;
   matchHomeScoreInput = '';
   matchAwayScoreInput = '';
-  matchStatusInput: MatchStatus = 'SCHEDULED';
   matchWentToPenaltiesInput = false;
+  matchPenaltyWinnerInput: MatchSide | '' = '';
+  selectedMatchHomeTeam = '';
+  selectedMatchAwayTeam = '';
+  isSelectedKnockoutMatch = false;
+
+  homeTeamScorers: string[] = [];
+  awayTeamScorers: string[] = [];
+  selectedHomeGoalScorer = '';
+  selectedAwayGoalScorer = '';
+  homeGoalTypeInput: GoalType = 'regular';
+  awayGoalTypeInput: GoalType = 'regular';
 
   selectedScorerName = '';
   scorerGoalsInput = 0;
+  showAdvancedScorerEditor = false;
 
   editorInfoMessage = '';
   editorErrorMessage = '';
@@ -59,6 +85,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   private dataSubscription?: Subscription;
   private originalData: GameData | null = null;
   private editableData: GameData | null = null;
+  private directProgressionTargetsByMatchId = new Map<number, ProgressTarget[]>();
 
   constructor(
     private readonly dataService: DataService,
@@ -71,6 +98,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.originalData = this.cloneData(data);
         this.editableData = this.cloneData(data);
+        this.directProgressionTargetsByMatchId = this.buildDirectProgressionTargets(data);
         this.recomputeDerivedViews();
         this.initializeEditorDefaults();
         this.isLoading = false;
@@ -131,22 +159,19 @@ export class AdminComponent implements OnInit, OnDestroy {
     return scorerName;
   }
 
+  trackByGoalIndex(_: number, goalEntry: GoalEntryView): number {
+    return goalEntry.index;
+  }
+
   onMatchSelectionChange(): void {
     this.clearEditorMessages();
+    this.applySelectedMatchContext();
+  }
 
-    const selectedMatch = this.getSelectedMatch();
-    if (!selectedMatch) {
-      this.matchHomeScoreInput = '';
-      this.matchAwayScoreInput = '';
-      this.matchStatusInput = 'SCHEDULED';
-      this.matchWentToPenaltiesInput = false;
-      return;
+  onPenaltiesToggleChange(): void {
+    if (!this.matchWentToPenaltiesInput) {
+      this.matchPenaltyWinnerInput = '';
     }
-
-    this.matchHomeScoreInput = selectedMatch.home_score === null ? '' : String(selectedMatch.home_score);
-    this.matchAwayScoreInput = selectedMatch.away_score === null ? '' : String(selectedMatch.away_score);
-    this.matchStatusInput = selectedMatch.status;
-    this.matchWentToPenaltiesInput = !!selectedMatch.went_to_penalties;
   }
 
   onScorerSelectionChange(): void {
@@ -186,13 +211,18 @@ export class AdminComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.matchStatusInput === 'FINISHED' && (homeScore === null || awayScore === null)) {
-      this.editorErrorMessage = 'Un partido finalizado necesita marcador completo.';
-      return;
-    }
+    if (homeScore === null && awayScore === null) {
+      selectedMatch.home_score = null;
+      selectedMatch.away_score = null;
+      selectedMatch.status = 'SCHEDULED';
+      selectedMatch.went_to_penalties = false;
+      selectedMatch.penalty_winner_side = undefined;
+      this.matchWentToPenaltiesInput = false;
+      this.matchPenaltyWinnerInput = '';
 
-    if (this.matchStatusInput === 'SCHEDULED' && (homeScore !== null || awayScore !== null)) {
-      this.editorErrorMessage = 'Un partido programado no debe tener marcador.';
+      this.applyDirectKnockoutProgression(selectedMatch);
+      this.recomputeDerivedViews();
+      this.editorInfoMessage = `Partido #${selectedMatch.id} reiniciado a pendiente.`;
       return;
     }
 
@@ -201,13 +231,117 @@ export class AdminComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.matchWentToPenaltiesInput && !this.isSelectedKnockoutMatch) {
+      this.editorErrorMessage = 'Los penaltis solo están permitidos en cruces eliminatorios.';
+      return;
+    }
+
+    if (this.isSelectedKnockoutMatch && homeScore === awayScore && !this.matchWentToPenaltiesInput) {
+      this.editorErrorMessage = 'En eliminatorias, un empate final requiere activar penaltis.';
+      return;
+    }
+
+    if (this.matchWentToPenaltiesInput && !this.matchPenaltyWinnerInput) {
+      this.editorErrorMessage = 'Selecciona el ganador en penaltis.';
+      return;
+    }
+
     selectedMatch.home_score = homeScore;
     selectedMatch.away_score = awayScore;
-    selectedMatch.status = this.matchStatusInput;
+    selectedMatch.status = 'FINISHED';
     selectedMatch.went_to_penalties = this.matchWentToPenaltiesInput;
+    selectedMatch.penalty_winner_side = this.matchWentToPenaltiesInput && this.matchPenaltyWinnerInput
+      ? this.matchPenaltyWinnerInput
+      : undefined;
 
+    this.applyDirectKnockoutProgression(selectedMatch);
     this.recomputeDerivedViews();
-    this.editorInfoMessage = `Partido #${selectedMatch.id} actualizado en memoria.`;
+    this.editorInfoMessage = `Partido #${selectedMatch.id} actualizado y marcado como finalizado.`;
+  }
+
+  addGoalForSelectedMatch(side: MatchSide): void {
+    this.clearEditorMessages();
+
+    const selectedMatch = this.getSelectedMatch();
+    if (!selectedMatch) {
+      this.editorErrorMessage = 'Selecciona un partido para registrar goles.';
+      return;
+    }
+
+    const scorerName = side === 'home' ? this.selectedHomeGoalScorer : this.selectedAwayGoalScorer;
+    const availableScorers = side === 'home' ? this.homeTeamScorers : this.awayTeamScorers;
+
+    if (!scorerName || !availableScorers.includes(scorerName)) {
+      this.editorErrorMessage = 'Selecciona un goleador válido para ese equipo.';
+      return;
+    }
+
+    const goalType = side === 'home' ? this.homeGoalTypeInput : this.awayGoalTypeInput;
+    selectedMatch.goals = selectedMatch.goals ?? [];
+    selectedMatch.goals.push({ scorer: scorerName, type: goalType });
+
+    this.syncScorerStatFromMatchGoals(scorerName);
+    this.recomputeDerivedViews();
+    this.editorInfoMessage = `Gol registrado para ${scorerName} en el partido #${selectedMatch.id}.`;
+  }
+
+  removeGoalFromSelectedMatch(goalIndex: number): void {
+    this.clearEditorMessages();
+
+    const selectedMatch = this.getSelectedMatch();
+    const goals = selectedMatch?.goals;
+
+    if (!selectedMatch || !goals || goalIndex < 0 || goalIndex >= goals.length) {
+      this.editorErrorMessage = 'No se pudo eliminar el gol seleccionado.';
+      return;
+    }
+
+    const removedGoal = goals.splice(goalIndex, 1)[0];
+    this.syncScorerStatFromMatchGoals(removedGoal.scorer);
+    this.recomputeDerivedViews();
+    this.editorInfoMessage = 'Gol eliminado del partido seleccionado.';
+  }
+
+  getGoalsForSelectedMatchSide(side: MatchSide): GoalEntryView[] {
+    const selectedMatch = this.getSelectedMatch();
+    if (!selectedMatch || !this.editableData) {
+      return [];
+    }
+
+    const sideTeam = side === 'home' ? selectedMatch.home_team : selectedMatch.away_team;
+    const sideTeamKey = this.scoringService.canonicalizeTeamName(sideTeam);
+    const goals = selectedMatch.goals ?? [];
+
+    return goals
+      .map((goal, index) => ({ goal, index }))
+      .filter((entry) => {
+        const scorerTeam = this.editableData?.scorers_stats[entry.goal.scorer]?.team;
+        if (!scorerTeam) {
+          return false;
+        }
+
+        return this.scoringService.canonicalizeTeamName(scorerTeam) === sideTeamKey;
+      });
+  }
+
+  getGoalTypeLabel(goalType: GoalType): string {
+    if (goalType === 'regular') {
+      return 'Reglamentario';
+    }
+
+    if (goalType === 'extra_time') {
+      return 'Prórroga';
+    }
+
+    if (goalType === 'own_goal') {
+      return 'Autogol';
+    }
+
+    if (goalType === 'assist') {
+      return 'Asistencia';
+    }
+
+    return 'Penaltis';
   }
 
   applyScorerUpdate(): void {
@@ -238,6 +372,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     scorerStat.goals = goals;
     this.recomputeDerivedViews();
     this.editorInfoMessage = `Goles actualizados para ${this.selectedScorerName}.`;
+  }
+
+  toggleAdvancedScorerEditor(): void {
+    this.showAdvancedScorerEditor = !this.showAdvancedScorerEditor;
   }
 
   resetEditorChanges(): void {
@@ -318,12 +456,183 @@ export class AdminComponent implements OnInit, OnDestroy {
     return hashArray.map((currentByte) => currentByte.toString(16).padStart(2, '0')).join('');
   }
 
+  private syncScorerStatFromMatchGoals(scorerName: string): void {
+    if (!this.editableData || !this.editableData.scorers_stats[scorerName]) {
+      return;
+    }
+
+    let goals = 0;
+
+    for (const match of this.editableData.matches) {
+      for (const currentGoal of match.goals ?? []) {
+        if (currentGoal.scorer !== scorerName) {
+          continue;
+        }
+
+        if (currentGoal.type !== 'regular' && currentGoal.type !== 'extra_time') {
+          continue;
+        }
+
+        goals += 1;
+      }
+    }
+
+    this.editableData.scorers_stats[scorerName].goals = goals;
+  }
+
+  private applySelectedMatchContext(): void {
+    const selectedMatch = this.getSelectedMatch();
+    if (!selectedMatch) {
+      this.matchHomeScoreInput = '';
+      this.matchAwayScoreInput = '';
+      this.matchWentToPenaltiesInput = false;
+      this.matchPenaltyWinnerInput = '';
+      this.selectedMatchHomeTeam = '';
+      this.selectedMatchAwayTeam = '';
+      this.isSelectedKnockoutMatch = false;
+      this.homeTeamScorers = [];
+      this.awayTeamScorers = [];
+      this.selectedHomeGoalScorer = '';
+      this.selectedAwayGoalScorer = '';
+      return;
+    }
+
+    this.selectedMatchHomeTeam = selectedMatch.home_team;
+    this.selectedMatchAwayTeam = selectedMatch.away_team;
+    this.isSelectedKnockoutMatch = this.isKnockoutMatch(selectedMatch);
+    this.matchHomeScoreInput = selectedMatch.home_score === null ? '' : String(selectedMatch.home_score);
+    this.matchAwayScoreInput = selectedMatch.away_score === null ? '' : String(selectedMatch.away_score);
+    this.matchWentToPenaltiesInput = !!selectedMatch.went_to_penalties;
+    this.matchPenaltyWinnerInput = selectedMatch.penalty_winner_side ?? '';
+
+    const previousHomeScorer = this.selectedHomeGoalScorer;
+    const previousAwayScorer = this.selectedAwayGoalScorer;
+
+    this.homeTeamScorers = this.buildTeamScorerOptions(selectedMatch.home_team);
+    this.awayTeamScorers = this.buildTeamScorerOptions(selectedMatch.away_team);
+
+    this.selectedHomeGoalScorer = this.homeTeamScorers.includes(previousHomeScorer)
+      ? previousHomeScorer
+      : (this.homeTeamScorers[0] ?? '');
+
+    this.selectedAwayGoalScorer = this.awayTeamScorers.includes(previousAwayScorer)
+      ? previousAwayScorer
+      : (this.awayTeamScorers[0] ?? '');
+  }
+
+  private buildTeamScorerOptions(teamName: string): string[] {
+    if (!this.editableData) {
+      return [];
+    }
+
+    const teamKey = this.scoringService.canonicalizeTeamName(teamName);
+
+    return Object.entries(this.editableData.scorers_stats)
+      .filter(([_, scorerStat]) => this.scoringService.canonicalizeTeamName(scorerStat.team) === teamKey)
+      .map(([scorerName]) => scorerName)
+      .sort((left, right) => left.localeCompare(right, 'es'));
+  }
+
+  private isKnockoutMatch(match: Match): boolean {
+    return match.group === null;
+  }
+
+  private parseProgressToken(rawTeamName: string): { token: 'W' | 'RU'; sourceMatchId: number } | null {
+    const normalized = rawTeamName.trim().toUpperCase();
+    const winnerMatch = /^W(\d+)$/.exec(normalized);
+    if (winnerMatch) {
+      return {
+        token: 'W',
+        sourceMatchId: Number(winnerMatch[1])
+      };
+    }
+
+    const runnerUpMatch = /^RU(\d+)$/.exec(normalized);
+    if (runnerUpMatch) {
+      return {
+        token: 'RU',
+        sourceMatchId: Number(runnerUpMatch[1])
+      };
+    }
+
+    return null;
+  }
+
+  private buildDirectProgressionTargets(data: GameData): Map<number, ProgressTarget[]> {
+    const targetsByMatch = new Map<number, ProgressTarget[]>();
+
+    data.matches.forEach((match) => {
+      (['home', 'away'] as MatchSide[]).forEach((side) => {
+        const teamReference = side === 'home' ? match.home_team : match.away_team;
+        const parsedToken = this.parseProgressToken(teamReference);
+        if (!parsedToken) {
+          return;
+        }
+
+        const targets = targetsByMatch.get(parsedToken.sourceMatchId) ?? [];
+        targets.push({
+          targetMatchId: match.id,
+          targetSide: side,
+          token: parsedToken.token
+        });
+        targetsByMatch.set(parsedToken.sourceMatchId, targets);
+      });
+    });
+
+    return targetsByMatch;
+  }
+
+  private setTeamOnMatchSide(match: Match, side: MatchSide, teamName: string): void {
+    if (side === 'home') {
+      match.home_team = teamName;
+      return;
+    }
+
+    match.away_team = teamName;
+  }
+
+  private getResolvedTeamForToken(sourceMatch: Match, token: 'W' | 'RU'): string | null {
+    const winnerSide = this.scoringService.resolveMatchWinnerSide(sourceMatch);
+    if (!winnerSide) {
+      return null;
+    }
+
+    if (token === 'W') {
+      return winnerSide === 'home' ? sourceMatch.home_team : sourceMatch.away_team;
+    }
+
+    return winnerSide === 'home' ? sourceMatch.away_team : sourceMatch.home_team;
+  }
+
+  private applyDirectKnockoutProgression(sourceMatch: Match): void {
+    if (!this.editableData) {
+      return;
+    }
+
+    const targets = this.directProgressionTargetsByMatchId.get(sourceMatch.id) ?? [];
+    if (targets.length === 0) {
+      return;
+    }
+
+    targets.forEach((target) => {
+      const targetMatch = this.editableData?.matches.find((match) => match.id === target.targetMatchId);
+      if (!targetMatch) {
+        return;
+      }
+
+      const resolvedTeam = this.getResolvedTeamForToken(sourceMatch, target.token);
+      const placeholder = `${target.token}${sourceMatch.id}`;
+      this.setTeamOnMatchSide(targetMatch, target.targetSide, resolvedTeam ?? placeholder);
+    });
+  }
+
   private recomputeDerivedViews(): void {
     if (!this.editableData) {
       this.pendingMatches = [];
       this.standings = [];
       this.allMatches = [];
       this.allScorers = [];
+      this.applySelectedMatchContext();
       return;
     }
 
@@ -336,6 +645,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       .sort((left, right) => left.localeCompare(right, 'es'));
 
     this.standings = this.scoringService.buildLeaderboard(this.editableData);
+    this.applySelectedMatchContext();
   }
 
   private initializeEditorDefaults(): void {
