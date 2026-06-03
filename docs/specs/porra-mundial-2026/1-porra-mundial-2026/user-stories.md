@@ -39,6 +39,7 @@
 - [ ] Knockout stage matches that are not yet resolved show placeholder identifiers (e.g. "1A vs 2B") instead of team names
 - [ ] A knockout match that went to a penalty shootout displays the 120-minute score alongside a "(pen.)" label
 - [ ] Match data is read directly from `data.json` with no manual duplication in component code
+- [ ] Within the Fase de Grupos section, a standings table is shown for each group (or only the selected group when a filter is active), displaying position, team name, PJ/G/E/P/GF/GC/DG/Pts; the top two rows are visually highlighted as qualifying positions
 
 ---
 
@@ -139,8 +140,8 @@
 - [ ] Accessing the Admin route shows only a password input and submit button — no data is exposed before authentication
 - [ ] Entering the wrong password displays the message "Contraseña incorrecta" in Spanish and clears the input field; no data is revealed
 - [ ] Entering the correct password (verified by comparing its SHA-256 hash against the stored hash in the environment file) reveals the full admin view
-- [ ] The admin view lists all matches with status "SCHEDULED" or "IN_PLAY" as pending result entry
-- [ ] The admin view includes a "Cómo actualizar resultados" section with step-by-step written instructions in Spanish for editing `data.json` via the GitHub repository web editor and committing the change
+- [ ] The admin view displays all matches with those pending result entry highlighted; it includes a match result editor for entering scores and per-team goal events directly in-app
+- [ ] The admin view includes a "Cómo actualizar resultados" section with step-by-step written instructions in Spanish for the 5-step in-app result entry workflow, and controls for downloading or publishing the updated `data.json`
 - [ ] The admin session does not persist after a page refresh — the password must be re-entered on each visit
 - [ ] The plaintext password `mundial2026` does not appear in any source file, template, environment file, or compiled output
 
@@ -177,3 +178,59 @@
 - [ ] A knockout match that ends 2–1 after 90 or 120 minutes (no draw) is recorded as a win — only the winning team's owning participant receives 3 points
 - [ ] The `went_to_penalties` flag in `data.json` is used solely to display the "(pen.)" label in the Partidos view; it has no effect on point calculations
 - [ ] Scorer goals recorded during a penalty shootout (type "penalty_shootout") do not contribute to any participant's scorer points, even if a scorer scores in both the match and the shootout
+
+---
+
+## US-11: Admin Enters Match Result In-App
+
+**As the** game admin,  
+**I want to** select a match from the list and enter its final score directly in the admin panel,  
+**So that** I don't need to manually edit `data.json` in a text editor for every result.
+
+### Acceptance Criteria
+
+- [ ] A match selector lists all matches; selecting a match populates the score input fields with the current scores (if any)
+- [ ] Home and away score inputs accept non-negative integers or empty (to reset the match)
+- [ ] Clicking "Apply" with valid scores sets the match status to `FINISHED` automatically
+- [ ] Clicking "Apply" with both fields empty resets the match to `SCHEDULED` and clears derived bracket slots back to their placeholder codes
+- [ ] If both scores are provided but only one field is filled, an error message in Spanish is displayed
+- [ ] For knockout matches, a "Fue a penaltis" checkbox is available; checking it reveals a penalty winner selector (home/away)
+- [ ] The penalty winner selector is only available for knockout-stage matches
+- [ ] If the knockout match is a draw and penalties are not checked, an error message prevents saving
+- [ ] If penalties are checked but no winner is selected, an error message prevents saving
+- [ ] All validation error messages are displayed in Spanish
+
+---
+
+## US-12: Admin Records Scorer Goals Per Match
+
+**As the** game admin,  
+**I want to** add or remove individual goal events for each team in a selected match,  
+**So that** scorer points update automatically without me having to manually count and edit the `scorers_stats` section.
+
+### Acceptance Criteria
+
+- [ ] The match editor shows two goal panels side by side, one for the home team and one for the away team
+- [ ] Each panel lists only the scorers assigned to that team in `scorers_stats`
+- [ ] Each panel has a scorer dropdown, a goal type selector (regular / extra_time), and an "Add goal" button
+- [ ] Added goals appear as a removable list within each panel
+- [ ] Removing a goal from the list immediately re-syncs that scorer's goal total in `scorers_stats`
+- [ ] Scorer goal totals are always derived from match goal events, not entered manually (unless the advanced override editor is used)
+- [ ] An advanced scorer override toggle reveals a legacy manual scorer-goals editor for exceptional corrections
+
+---
+
+## US-13: Knockout and Group Bracket Auto-Population
+
+**As the** game admin,  
+**I want** the bracket slots in the Round of 32 and later rounds to be filled in automatically when I save a match result,  
+**So that** I never need to manually look up which team advances and type it into the data.
+
+### Acceptance Criteria
+
+- [ ] After a knockout match is saved as `FINISHED`, the immediately dependent `W{id}` or `RU{id}` bracket slot in the next-round fixture is automatically updated with the advancing team name
+- [ ] If a knockout match result is cleared (reset to `SCHEDULED`), the dependent bracket slot reverts to its placeholder code (e.g. `W73`)
+- [ ] After a group-stage match completes a group (all 6 matches `FINISHED`), the `1X` and `2X` Round of 32 bracket slots for that group are automatically populated with the 1st- and 2nd-placed team names
+- [ ] If a group-stage result is cleared and the group is no longer complete, the `1X` and `2X` slots revert to their placeholder codes
+- [ ] When all 12 groups are complete, the 8 third-place bracket slots (e.g. `3ABCDF`) are automatically resolved using FIFA criteria and each assigned a team whose group letter appears in the slot code's eligible set
+- [ ] Third-place bracket slots are reset to their placeholder codes whenever any group becomes incomplete again

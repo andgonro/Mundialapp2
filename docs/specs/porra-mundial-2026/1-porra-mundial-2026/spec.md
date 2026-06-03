@@ -54,6 +54,8 @@ This document specifies the full functional, technical, and non-functional requi
 
 **FR-3.7** — If a knockout match went to penalty shootout, this shall be indicated next to the score (e.g. a "(pen)" label), but the score displayed shall reflect only the 120-minute result.
 
+**FR-3.8** — Within the Fase de Grupos section, below each group's match list, the view shall display a real-time standings table for that group showing: position, team name, matches played (PJ), wins (G), draws (E), losses (P), goals for (GF), goals against (GC), goal difference (DG), and points (Pts). The top two rows in each table shall be visually highlighted as qualifying positions. When the group filter is set to "Todos", all 12 group tables shall be shown.
+
 ---
 
 ### FR-4: Estadísticas (Statistics View)
@@ -100,13 +102,23 @@ This document specifies the full functional, technical, and non-functional requi
 
 **FR-6.3** — On password submission, the entered value shall be hashed client-side (SHA-256) and compared to the stored hash. If the comparison fails, an error message in Spanish shall be displayed ("Contraseña incorrecta"). The input field shall be cleared.
 
-**FR-6.4** — On successful authentication, the Admin view shall display: a list of matches pending result entry (status ≠ "FINISHED"), the current leaderboard standings (same data as Clasificación), and a section titled "Cómo actualizar resultados".
+**FR-6.4** — On successful authentication, the Admin view shall display: a list of all matches (with pending matches highlighted), the current leaderboard standings (same data as Clasificación), a match result editor for entering scores and goal events directly in-app, and a section titled "Cómo actualizar resultados" with controls for downloading or publishing the updated `data.json`.
 
-**FR-6.5** — The "Cómo actualizar resultados" section shall display step-by-step written instructions in Spanish explaining how to edit `data.json` in the GitHub repository (via the GitHub web editor) and commit the changes so the app reflects the new data.
+**FR-6.5** — The "Cómo actualizar resultados" section shall display step-by-step written instructions in Spanish describing the 5-step in-app result entry workflow: (1) select a match, (2) enter the score, (3) add goal events per team, (4) apply the update, (5) download or publish the updated `data.json`.
 
 **FR-6.6** — The admin session shall not persist between page refreshes (no session token or cookie is stored). The user must re-enter the password on each visit.
 
 **FR-6.7** — The admin password in plaintext form shall never appear in any source file, template, environment file, or compiled output. Only its SHA-256 hash shall be present in the codebase.
+
+**FR-6.8** — The admin match editor shall allow selecting a match from a list, entering home and away scores, and confirming the update. On confirmation, the match status shall be automatically set to `FINISHED` if both scores are valid non-negative integers. If both score fields are left empty, the match shall be reset to `SCHEDULED` and all derived bracket slots reset to their placeholder codes.
+
+**FR-6.9** — The admin match editor shall display two side-by-side goal entry panels — one for each team in the selected match. Each panel shall list only the scorers assigned to that team, a goal-type selector (regular / extra_time), an "Add goal" button, and a removable list of all goals entered for that team in that match. Scorer goal totals in `scorers_stats` shall be automatically re-derived from match goal events when goals are added or removed.
+
+**FR-6.10** — For knockout matches where the admin activates the "went to penalties" option, a penalty winner selector shall appear allowing the admin to designate the home or away side as the shootout winner. This selection shall determine which team advances in the bracket. The scoring engine shall continue to treat the match as a draw for points purposes (FR-5.4). The penalty winner selector shall only be available for knockout-stage matches.
+
+**FR-6.11** — When a knockout match result is saved, the admin panel shall automatically resolve the immediate dependent bracket slot (`W{id}` or `RU{id}`) in the next-round fixture, replacing the placeholder team identifier with the actual advancing team name. Propagation is single-hop only and does not cascade further than the immediately dependent match.
+
+**FR-6.12** — When the result of a group-stage match completes a group (all 6 matches finished), the admin panel shall automatically populate the 1st-place (`1X`) and 2nd-place (`2X`) bracket slots in the Round of 32 with the corresponding team names from the computed group standings. When all 12 groups are complete, the 8 third-place bracket slots (e.g. `3ABCDF`) shall be automatically resolved by ranking all 12 third-placed teams using FIFA criteria and assigning each to the slot whose eligible group set contains that team's group letter.
 
 ---
 
@@ -122,11 +134,11 @@ This document specifies the full functional, technical, and non-functional requi
 
 **TR-1.4** — Each entry in `scorers_stats` shall describe one assigned scorer, including the scorer's name as the key, and their national team and current goal count as values.
 
-**TR-1.5** — Each entry in the `matches` array shall include: a unique numeric ID, the stage name, the group identifier (if applicable), ISO 8601 date, local time string, home team name, away team name, home score (null if not yet played), away score (null if not yet played), stadium name, and a status string of either "SCHEDULED", "IN_PLAY", or "FINISHED".
+**TR-1.5** — Each entry in the `matches` array shall include: a unique numeric ID, the stage name, the group identifier (if applicable), ISO 8601 date, local time string, home team name, away team name, home score (null if not yet played), away score (null if not yet played), stadium name, and a status string of either "SCHEDULED", "IN_PLAY", or "FINISHED". For knockout matches that went to a penalty shootout, an optional `penalty_winner_side` field (values: `"home"` or `"away"`) records the side that won the shootout for bracket advancement purposes.
 
-**TR-1.6** — Each match entry shall include an optional `goals` array. Each goal entry within it shall contain: scorer name and goal type (one of "regular", "own_goal", or "penalty_shootout").
+**TR-1.6** — Each match entry shall include an optional `goals` array. Each goal entry within it shall contain: scorer name and goal type (one of `"regular"`, `"extra_time"`, `"own_goal"`, `"assist"`, or `"penalty_shootout"`). Only goals of type `"regular"` or `"extra_time"` count towards scorer points (FR-5.6, FR-5.7).
 
-**TR-1.7** — Each knockout match entry shall include an optional boolean field `went_to_penalties` (default false). When true, the scoring engine shall treat the match as a draw for points purposes, regardless of the goals difference shown in the score.
+**TR-1.7** — Each knockout match entry shall include an optional boolean field `went_to_penalties` (default false). When true, the scoring engine shall treat the match as a draw for points purposes, regardless of the goals difference shown in the score. When `went_to_penalties` is true, the `penalty_winner_side` field (TR-1.5) shall determine the advancing team for bracket slot resolution.
 
 **TR-1.8** — The `data.json` file shall be fully seeded before deployment with all 104 fixtures (as specified in the game rules document), all 10 participant assignments, and all 40 scorer entries with `goals: 0` as their initial state.
 
@@ -141,6 +153,8 @@ This document specifies the full functional, technical, and non-functional requi
 **TR-2.3** — The service shall expose methods for: computing total points per participant, computing points breakdown (teams vs. scorers) per participant, computing the Pichichi ranking, and computing the team performance ranking.
 
 **TR-2.4** — No other component or service shall replicate scoring logic. All point calculations must pass through this single service.
+
+**TR-2.5** — A dedicated `GroupStandingsService` shall compute real-time group standings for all 12 groups from finished group-stage matches. It shall expose: `buildGroupStandings()` (returns standings per group sorted by FIFA cascade: points → goal difference → goals for → head-to-head among tied sub-cluster → alphabetical), `rankThirdPlacedTeams()` (cross-group ranking of all 12 third-placed teams by the same criteria excluding H2H), and `assignThirdPlaceSlots()` (bipartite matching of top 8 third-placed teams to `3XXXXX` slot codes based on group-letter eligibility). This service shall be stateless and pure.
 
 ---
 
@@ -231,7 +245,6 @@ This document specifies the full functional, technical, and non-functional requi
 - User accounts, login sessions, or role-based access control
 - Push notifications or alerts for match results
 - Historical data from prior World Cup tournaments
-- Group stage standings tables (points, goal difference, top/bottom qualification) — only sweepstakes points are tracked
 - Attribution of penalty shootout goal scorers for any purpose
 - Mobile app (iOS/Android native or PWA installation)
 - Multi-language support
