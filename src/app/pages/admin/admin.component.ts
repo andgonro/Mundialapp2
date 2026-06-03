@@ -58,6 +58,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   publishResultUrl = '';
   publishResultSha = '';
 
+  isBlobsPublishing = false;
+  blobsPublishInfoMessage = '';
+  blobsPublishErrorMessage = '';
+
   private dataSubscription?: Subscription;
   private originalData: GameData | null = null;
   private editableData: GameData | null = null;
@@ -324,6 +328,42 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
+  publishUpdatedDataToBlobs(): void {
+    this.clearBlobsPublishMessages();
+
+    if (!this.editableData) {
+      this.blobsPublishErrorMessage = 'No hay datos para publicar.';
+      return;
+    }
+
+    const adminSecret = this.publishSecretInput.trim();
+    if (!adminSecret) {
+      this.blobsPublishErrorMessage = 'Introduce la clave de publicación.';
+      return;
+    }
+
+    this.isBlobsPublishing = true;
+
+    this.http.post<PublishDataResponse>(
+      '/.netlify/functions/publish-data-blobs',
+      { updatedData: this.editableData },
+      { headers: { 'x-admin-secret': adminSecret } }
+    ).subscribe({
+      next: (response) => {
+        this.isBlobsPublishing = false;
+        this.blobsPublishInfoMessage = response.message || 'Guardado en Blobs.';
+        this.publishSecretInput = '';
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isBlobsPublishing = false;
+        const payload = error.error as { message?: unknown } | null;
+        const backendMessage = payload && typeof payload.message === 'string'
+          ? payload.message : '';
+        this.blobsPublishErrorMessage = backendMessage || 'No se pudo guardar en Blobs.';
+      }
+    });
+  }
+
   private async hashValue(value: string): Promise<string> {
     const bytes = new TextEncoder().encode(value);
     const hashBuffer = await crypto.subtle.digest('SHA-256', bytes);
@@ -394,6 +434,11 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.publishErrorMessage = '';
     this.publishResultUrl = '';
     this.publishResultSha = '';
+  }
+
+  private clearBlobsPublishMessages(): void {
+    this.blobsPublishInfoMessage = '';
+    this.blobsPublishErrorMessage = '';
   }
 
   private cloneData(data: GameData): GameData {

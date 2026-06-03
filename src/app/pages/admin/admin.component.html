@@ -179,6 +179,25 @@
 						</a>
 					</p>
 				</section>
+
+				<section class="editor-card blobs-card">
+					<h4>Publicar en Blobs (paralelo)</h4>
+					<p class="muted">
+						Guarda el data.json en Netlify Blobs. Activa <code>blobsBackend: true</code> en environment.prod.ts para que la web lo cargue desde aquí.
+					</p>
+
+					<p class="muted blobs-note">Usa la misma clave de publicación del panel de arriba.</p>
+
+					<button
+						type="button"
+						(click)="publishUpdatedDataToBlobs()"
+						[disabled]="isBlobsPublishing">
+						{{ isBlobsPublishing ? 'Guardando...' : 'Publicar en Blobs' }}
+					</button>
+
+					<p class="state-box" *ngIf="blobsPublishInfoMessage">{{ blobsPublishInfoMessage }}</p>
+					<p class="state-box error" *ngIf="blobsPublishErrorMessage">{{ blobsPublishErrorMessage }}</p>
+				</section>
 			</article>
 
 			<article class="panel">
@@ -218,7 +237,8 @@
 				<h3>Cómo publicar los cambios</h3>
 				<ol class="instructions">
 					<li>Usa el editor de arriba para actualizar partidos y goleadores.</li>
-					<li>Para publicar directo, introduce la clave y pulsa “Publicar en GitHub”.</li>
+					<li>Opción GitHub: introduce la clave y pulsa "Publicar en GitHub" (crea commit automático).</li>
+					<li>Opción Blobs: pulsa "Publicar en Blobs" con la misma clave; activa <code>blobsBackend: true</code> en environment.prod.ts para que la web lo use.</li>
 					<li>Si no tienes clave, descarga data.json y súbelo manualmente al repo.</li>
 					<li>Recarga la web para ver la clasificación recalculada al instante.</li>
 				</ol>
