@@ -4,7 +4,7 @@
       "id": "IOKIN",
       "teams": [
         "Canadá",
-        "England",
+        "Inglaterra",
         "Marruecos",
         "Sudafrica"
       ],
@@ -24,7 +24,7 @@
         "Catar"
       ],
       "scorers": [
-        "Harry Kane (England)",
+        "Harry Kane (Inglaterra)",
         "Julián Álvarez (Argentina)",
         "C. Pulisic (EE. UU.)",
         "Ferran Torres (España)"
@@ -54,7 +54,7 @@
         "Paraguay"
       ],
       "scorers": [
-        "Bukayo Saka (England)",
+        "Bukayo Saka (Inglaterra)",
         "O. Dembélé (Francia)",
         "Bruno Fernandes (Portugal)",
         "F. Balogun (EE. UU.)"
@@ -169,7 +169,7 @@
       "goals": 0
     },
     "Harry Kane": {
-      "team": "England",
+      "team": "Inglaterra",
       "goals": 0
     },
     "Julián Álvarez": {
@@ -201,7 +201,7 @@
       "goals": 0
     },
     "Bukayo Saka": {
-      "team": "England",
+      "team": "Inglaterra",
       "goals": 0
     },
     "O. Dembélé": {
