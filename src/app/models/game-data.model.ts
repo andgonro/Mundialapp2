@@ -28,6 +28,8 @@ export interface Match {
 	time: string;
 	home_team: string;
 	away_team: string;
+	home_bracket_slot?: string;
+	away_bracket_slot?: string;
 	home_score: number | null;
 	away_score: number | null;
 	stadium: string;

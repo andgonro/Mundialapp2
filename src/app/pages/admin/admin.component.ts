@@ -31,6 +31,44 @@ interface ProgressTarget {
   token: 'W' | 'RU';
 }
 
+const ROUND_OF_32_SLOT_BY_MATCH_ID: Record<number, { home: string; away: string }> = {
+  73: { home: '2A', away: '2B' },
+  74: { home: '1C', away: '2F' },
+  75: { home: '1E', away: '3ABCDF' },
+  76: { home: '1F', away: '2C' },
+  77: { home: '2E', away: '2I' },
+  78: { home: '1I', away: '3CDFGH' },
+  79: { home: '1A', away: '3CEFHI' },
+  80: { home: '1L', away: '3EHIJK' },
+  81: { home: '1G', away: '3AEHIJ' },
+  82: { home: '1D', away: '3BEFIJ' },
+  83: { home: '1H', away: '2J' },
+  84: { home: '2K', away: '2L' },
+  85: { home: '1B', away: '3EFGIJ' },
+  86: { home: '2D', away: '2G' },
+  87: { home: '1J', away: '2H' },
+  88: { home: '1K', away: '3DEIJL' }
+};
+
+const KNOCKOUT_PROGRESS_SLOT_BY_MATCH_ID: Record<number, { home: string; away: string }> = {
+  89: { home: 'W73', away: 'W75' },
+  90: { home: 'W74', away: 'W77' },
+  91: { home: 'W76', away: 'W78' },
+  92: { home: 'W79', away: 'W80' },
+  93: { home: 'W83', away: 'W84' },
+  94: { home: 'W81', away: 'W82' },
+  95: { home: 'W86', away: 'W88' },
+  96: { home: 'W85', away: 'W87' },
+  97: { home: 'W89', away: 'W90' },
+  98: { home: 'W93', away: 'W94' },
+  99: { home: 'W91', away: 'W92' },
+  100: { home: 'W95', away: 'W96' },
+  101: { home: 'W97', away: 'W98' },
+  102: { home: 'W99', away: 'W100' },
+  103: { home: 'RU101', away: 'RU102' },
+  104: { home: 'W101', away: 'W102' }
+};
+
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -578,7 +616,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
     data.matches.forEach((match) => {
       (['home', 'away'] as MatchSide[]).forEach((side) => {
-        const teamReference = side === 'home' ? match.home_team : match.away_team;
+        const teamReference = this.resolveDirectProgressReference(match, side);
         const parsedToken = this.parseProgressToken(teamReference);
         if (!parsedToken) {
           return;
@@ -595,6 +633,30 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
 
     return targetsByMatch;
+  }
+
+  private isDirectProgressReference(value: string): boolean {
+    const normalized = value.trim().toUpperCase();
+    return /^W\d+$/.test(normalized) || /^RU\d+$/.test(normalized);
+  }
+
+  private resolveDirectProgressReference(match: Match, side: MatchSide): string {
+    const explicitSlot = side === 'home' ? match.home_bracket_slot : match.away_bracket_slot;
+    if (explicitSlot && this.isDirectProgressReference(explicitSlot)) {
+      return explicitSlot;
+    }
+
+    const teamValue = side === 'home' ? match.home_team : match.away_team;
+    if (this.isDirectProgressReference(teamValue)) {
+      return teamValue;
+    }
+
+    const fallbackSlots = KNOCKOUT_PROGRESS_SLOT_BY_MATCH_ID[match.id];
+    if (!fallbackSlots) {
+      return teamValue;
+    }
+
+    return side === 'home' ? fallbackSlots.home : fallbackSlots.away;
   }
 
   private setTeamOnMatchSide(match: Match, side: MatchSide, teamName: string): void {
@@ -645,21 +707,47 @@ export class AdminComponent implements OnInit, OnDestroy {
     const targets = new Map<string, { matchId: number; side: MatchSide }>();
 
     for (const match of data.matches) {
-      if (/^[12][A-L]$/.test(match.home_team)) {
-        targets.set(match.home_team, { matchId: match.id, side: 'home' });
+      const homeRef = this.resolveGroupSlotReference(match, 'home');
+      const awayRef = this.resolveGroupSlotReference(match, 'away');
+
+      if (/^[12][A-L]$/.test(homeRef)) {
+        targets.set(homeRef, { matchId: match.id, side: 'home' });
       }
-      if (/^[12][A-L]$/.test(match.away_team)) {
-        targets.set(match.away_team, { matchId: match.id, side: 'away' });
+      if (/^[12][A-L]$/.test(awayRef)) {
+        targets.set(awayRef, { matchId: match.id, side: 'away' });
       }
-      if (/^3[A-L]+$/.test(match.home_team)) {
-        targets.set(match.home_team, { matchId: match.id, side: 'home' });
+      if (/^3[A-L]+$/.test(homeRef)) {
+        targets.set(homeRef, { matchId: match.id, side: 'home' });
       }
-      if (/^3[A-L]+$/.test(match.away_team)) {
-        targets.set(match.away_team, { matchId: match.id, side: 'away' });
+      if (/^3[A-L]+$/.test(awayRef)) {
+        targets.set(awayRef, { matchId: match.id, side: 'away' });
       }
     }
 
     return targets;
+  }
+
+  private isGroupSlotReference(value: string): boolean {
+    return /^[12][A-L]$/.test(value) || /^3[A-L]+$/.test(value);
+  }
+
+  private resolveGroupSlotReference(match: Match, side: MatchSide): string {
+    const explicitSlot = side === 'home' ? match.home_bracket_slot : match.away_bracket_slot;
+    if (explicitSlot) {
+      return explicitSlot;
+    }
+
+    const teamValue = side === 'home' ? match.home_team : match.away_team;
+    if (this.isGroupSlotReference(teamValue)) {
+      return teamValue;
+    }
+
+    const fallbackSlots = ROUND_OF_32_SLOT_BY_MATCH_ID[match.id];
+    if (!fallbackSlots) {
+      return teamValue;
+    }
+
+    return side === 'home' ? fallbackSlots.home : fallbackSlots.away;
   }
 
   private applyGroupProgression(_group: string): void {
