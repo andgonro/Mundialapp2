@@ -37,6 +37,7 @@ export class PartidosComponent implements OnInit, OnDestroy {
   selectedGroup = 'TODOS';
   matchesByStage: Record<string, Match[]> = {};
   groupStandings: Record<string, GroupStandingRow[]> = {};
+  rankedThirds: GroupStandingRow[] = [];
 
   private dataSubscription?: Subscription;
 
@@ -50,6 +51,7 @@ export class PartidosComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.matchesByStage = this.groupMatchesByStage(data);
         this.groupStandings = this.groupStandingsService.buildGroupStandings(data.matches);
+        this.rankedThirds = this.groupStandingsService.rankThirdPlacedTeams(this.groupStandings);
         this.isLoading = false;
       },
       error: () => {

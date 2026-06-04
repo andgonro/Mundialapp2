@@ -91,6 +91,52 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="thirds-block" *ngIf="rankedThirds.length > 0">
+						<div class="thirds-header">
+							<h4 class="thirds-title">Mejores terceros clasificados</h4>
+							<span class="chip">{{ rankedThirds.length >= 8 ? '8 / 12 clasifican' : rankedThirds.length + ' / 12 grupos' }}</span>
+						</div>
+						<div class="standings-scroll">
+							<table class="standings-table">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th class="col-group" title="Grupo">Gr.</th>
+										<th class="col-team">Selección</th>
+										<th title="Partidos jugados">PJ</th>
+										<th title="Victorias">G</th>
+										<th title="Empates">E</th>
+										<th title="Derrotas">P</th>
+										<th class="col-hide" title="Goles a favor">GF</th>
+										<th class="col-hide" title="Goles en contra">GC</th>
+										<th class="col-hide" title="Diferencia de goles">DG</th>
+										<th class="col-pts" title="Puntos">Pts</th>
+									</tr>
+								</thead>
+								<tbody>
+									<ng-container *ngFor="let row of rankedThirds; let rank = index">
+										<tr class="cutline" *ngIf="rank === 8">
+											<td colspan="11" class="cutline-label">— No clasifican —</td>
+										</tr>
+										<tr [class.qualify]="rank < 8">
+											<td>{{ rank + 1 }}</td>
+											<td class="col-group">{{ row.group }}</td>
+											<td class="col-team">{{ row.teamName }}</td>
+											<td>{{ row.played }}</td>
+											<td>{{ row.won }}</td>
+											<td>{{ row.drawn }}</td>
+											<td>{{ row.lost }}</td>
+											<td class="col-hide">{{ row.goalsFor }}</td>
+											<td class="col-hide">{{ row.goalsAgainst }}</td>
+											<td class="col-hide">{{ row.goalDifference >= 0 ? '+' + row.goalDifference : row.goalDifference }}</td>
+											<td class="col-pts">{{ row.points }}</td>
+										</tr>
+									</ng-container>
+								</tbody>
+							</table>
+						</div>
+					</div>
 				</ng-container>
 			</ng-container>
 		</article>
