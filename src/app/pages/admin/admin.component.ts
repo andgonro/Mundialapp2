@@ -662,21 +662,24 @@ export class AdminComponent implements OnInit, OnDestroy {
     return targets;
   }
 
-  private applyGroupProgression(group: string): void {
+  private applyGroupProgression(_group: string): void {
     if (!this.editableData) {
       return;
     }
 
-    const groupMatches = this.editableData.matches.filter(
-      (m) => m.stage === 'Group Stage' && m.group === group
-    );
-    const allFinished = groupMatches.every((m) => m.status === 'FINISHED');
-
+    const ALL_GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
     const groupStandings = this.groupStandingsService.buildGroupStandings(this.editableData.matches);
-    const rows = groupStandings[group] ?? [];
 
-    this.setGroupSlot(`1${group}`, allFinished && rows[0] ? rows[0].teamName : `1${group}`);
-    this.setGroupSlot(`2${group}`, allFinished && rows[1] ? rows[1].teamName : `2${group}`);
+    for (const g of ALL_GROUPS) {
+      const gMatches = this.editableData.matches.filter(
+        (m) => m.stage === 'Group Stage' && m.group === g
+      );
+      const gFinished = gMatches.length > 0 && gMatches.every((m) => m.status === 'FINISHED');
+      const rows = groupStandings[g] ?? [];
+
+      this.setGroupSlot(`1${g}`, gFinished && rows[0] ? rows[0].teamName : `1${g}`);
+      this.setGroupSlot(`2${g}`, gFinished && rows[1] ? rows[1].teamName : `2${g}`);
+    }
 
     this.applyThirdPlaceProgressionIfAllGroupsComplete(groupStandings);
   }
