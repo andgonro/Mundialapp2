@@ -43,6 +43,9 @@
 - [ ] A knockout match that went to a penalty shootout displays the 120-minute score alongside a "(pen.)" label
 - [ ] Match data is read directly from `data.json` with no manual duplication in component code
 - [ ] Within the Fase de Grupos section, a standings table is shown for each group (or only the selected group when a filter is active), displaying position, team name, PJ/G/E/P/GF/GC/DG/Pts; the top two rows are visually highlighted as qualifying positions
+- [ ] Each match shows the participant ID who owns the home team and the participant ID who owns the away team, alongside each team name
+- [ ] If a team has no owning participant (e.g. unresolved knockout placeholder or excluded team), no owner label is shown for that team
+- [ ] Next to the group filter, a participant filter lists "Todos" and all 10 participant IDs; selecting one participant shows only matches where that participant owns either the home or away team, across all stages
 
 ---
 

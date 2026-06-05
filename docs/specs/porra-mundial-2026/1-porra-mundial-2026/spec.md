@@ -62,6 +62,10 @@ This document specifies the full functional, technical, and non-functional requi
 
 **FR-3.11** — Inside the Group Stage section, a single "Clasificación" toggle shall collapse/expand all group standings tables and the "Mejores terceros clasificados" block together.
 
+**FR-3.12** — Each match entry shall display the owning participant ID next to each team name (home and away), resolved from team assignments in `players[].teams`. If a team has no owning participant, no owner label shall be shown for that team.
+
+**FR-3.13** — The Partidos view shall include a participant filter next to the group filter. The options shall include "Todos" and all participant IDs from `players`. When a participant is selected, the match list for every stage shall show only matches where that participant owns either the home team or the away team.
+
 ---
 
 ### FR-4: Estadísticas (Statistics View)

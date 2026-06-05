@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { GameData, GroupStandingRow, Match } from '../../models/game-data.model';
 import { DataService } from '../../services/data.service';
 import { GroupStandingsService } from '../../services/group-standings.service';
+import { ScoringService } from '../../services/scoring.service';
 
 @Component({
   selector: 'app-partidos',
@@ -35,22 +36,28 @@ export class PartidosComponent implements OnInit, OnDestroy {
   isLoading = true;
   errorMessage = '';
   selectedGroup = 'TODOS';
+  selectedPlayer = 'TODOS';
+  playerOptions: string[] = ['TODOS'];
   expandedStages = new Set<string>();
   isGroupClassificationExpanded = false;
   matchesByStage: Record<string, Match[]> = {};
   groupStandings: Record<string, GroupStandingRow[]> = {};
   rankedThirds: GroupStandingRow[] = [];
+  private teamOwnership = new Map<string, string>();
 
   private dataSubscription?: Subscription;
 
   constructor(
     private readonly dataService: DataService,
-    private readonly groupStandingsService: GroupStandingsService
+    private readonly groupStandingsService: GroupStandingsService,
+    private readonly scoringService: ScoringService
   ) { }
 
   ngOnInit(): void {
     this.dataSubscription = this.dataService.getGameData().subscribe({
       next: (data) => {
+        this.playerOptions = this.buildPlayerOptions(data);
+        this.teamOwnership = this.buildTeamOwnership(data);
         this.matchesByStage = this.groupMatchesByStage(data);
         this.groupStandings = this.groupStandingsService.buildGroupStandings(data.matches);
         this.rankedThirds = this.groupStandingsService.rankThirdPlacedTeams(this.groupStandings);
@@ -68,13 +75,22 @@ export class PartidosComponent implements OnInit, OnDestroy {
   }
 
   getMatchesForStage(stage: string): Match[] {
-    const baseMatches = this.matchesByStage[stage] ?? [];
+    let filteredMatches = this.matchesByStage[stage] ?? [];
 
-    if (stage !== 'Group Stage' || this.selectedGroup === 'TODOS') {
-      return baseMatches;
+    if (stage === 'Group Stage' && this.selectedGroup !== 'TODOS') {
+      filteredMatches = filteredMatches.filter((match) => match.group === this.selectedGroup);
     }
 
-    return baseMatches.filter((match) => match.group === this.selectedGroup);
+    if (this.selectedPlayer !== 'TODOS') {
+      filteredMatches = filteredMatches.filter((match) => this.matchBelongsToPlayer(match, this.selectedPlayer));
+    }
+
+    return filteredMatches;
+  }
+
+  getTeamOwnerId(teamName: string): string | null {
+    const canonicalTeam = this.scoringService.canonicalizeTeamName(teamName);
+    return this.teamOwnership.get(canonicalTeam) ?? null;
   }
 
   stageHeading(stage: string): string {
@@ -139,6 +155,27 @@ export class PartidosComponent implements OnInit, OnDestroy {
 
   private stageDomKey(stage: string): string {
     return stage.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  }
+
+  private matchBelongsToPlayer(match: Match, playerId: string): boolean {
+    return this.getTeamOwnerId(match.home_team) === playerId || this.getTeamOwnerId(match.away_team) === playerId;
+  }
+
+  private buildPlayerOptions(data: GameData): string[] {
+    const uniquePlayers = Array.from(new Set(data.players.map((player) => player.id)));
+    return ['TODOS', ...uniquePlayers];
+  }
+
+  private buildTeamOwnership(data: GameData): Map<string, string> {
+    const ownership = new Map<string, string>();
+
+    for (const player of data.players) {
+      for (const team of player.teams) {
+        ownership.set(this.scoringService.canonicalizeTeamName(team), player.id);
+      }
+    }
+
+    return ownership;
   }
 
   private groupMatchesByStage(data: GameData): Record<string, Match[]> {

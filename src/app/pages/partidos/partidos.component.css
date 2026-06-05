@@ -6,12 +6,17 @@
 	flex-wrap: wrap;
 }
 
-.filter-panel label {
+.filter-control {
+	display: grid;
+	gap: 0.35rem;
+}
+
+.filter-control label {
 	color: var(--text-muted);
 	font-size: 0.9rem;
 }
 
-.filter-panel select {
+.filter-control select {
 	min-height: 44px;
 	border-radius: 10px;
 	border: 1px solid var(--line);
@@ -45,10 +50,6 @@
 	font-weight: 700;
 	cursor: pointer;
 	text-align: left;
-}
-
-.stage-toggle:hover {
-	color: #f6d25f;
 }
 
 .stage-toggle:focus-visible,

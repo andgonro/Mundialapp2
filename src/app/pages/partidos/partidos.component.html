@@ -7,12 +7,23 @@
 	</header>
 
 	<section class="panel filter-panel" *ngIf="!isLoading && !errorMessage">
-		<label for="group-filter">Filtrar fase de grupos:</label>
-		<select id="group-filter" [(ngModel)]="selectedGroup" aria-label="Filtro de grupo">
-			<option *ngFor="let group of groupOptions" [ngValue]="group">
-				{{ group === 'TODOS' ? 'Todos los grupos' : 'Grupo ' + group }}
-			</option>
-		</select>
+		<div class="filter-control">
+			<label for="group-filter">Filtrar fase de grupos:</label>
+			<select id="group-filter" [(ngModel)]="selectedGroup" aria-label="Filtro de grupo">
+				<option *ngFor="let group of groupOptions" [ngValue]="group">
+					{{ group === 'TODOS' ? 'Todos los grupos' : 'Grupo ' + group }}
+				</option>
+			</select>
+		</div>
+
+		<div class="filter-control">
+			<label for="player-filter">Filtrar participante:</label>
+			<select id="player-filter" [(ngModel)]="selectedPlayer" aria-label="Filtro de participante">
+				<option *ngFor="let playerId of playerOptions" [ngValue]="playerId">
+					{{ playerId === 'TODOS' ? 'Todos los participantes' : playerId }}
+				</option>
+			</select>
+		</div>
 	</section>
 
 	<div *ngIf="isLoading" class="state-box">Cargando partidos...</div>
@@ -50,9 +61,15 @@
 
 								<div class="line-main">
 									<p class="teams">
-										<span>{{ match.home_team }}</span>
+										<span class="team-cell">
+											<span>{{ match.home_team }}</span>
+											<span class="team-owner muted" *ngIf="getTeamOwnerId(match.home_team) as homeOwner">{{ homeOwner }}</span>
+										</span>
 										<strong class="score">{{ formatScore(match) }}</strong>
-										<span>{{ match.away_team }}</span>
+										<span class="team-cell team-cell-away">
+											<span>{{ match.away_team }}</span>
+											<span class="team-owner muted" *ngIf="getTeamOwnerId(match.away_team) as awayOwner">{{ awayOwner }}</span>
+										</span>
 									</p>
 									<span class="penalty" *ngIf="match.went_to_penalties && match.home_score !== null && match.away_score !== null">
 										(pen.)
