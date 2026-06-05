@@ -33,9 +33,12 @@
 
 - [ ] All 104 matches are displayed in the Partidos view
 - [ ] Matches are grouped by stage: Fase de Grupos, Dieciseisavos de Final, Octavos de Final, Cuartos de Final, Semifinales, Tercer Puesto, and Final
+- [ ] Each stage block has an expand/collapse control and all stage blocks are collapsed by default when the Partidos view first loads
+- [ ] Expanding or collapsing one stage does not modify the expanded state of other stages
 - [ ] Each match shows: date, time, stage/group label, home team, away team, final score (or "–" if not yet played), and stadium name
 - [ ] Finished matches are visually distinct from unplayed matches (e.g. different text colour or background)
 - [ ] Group stage matches can be filtered by group (Grupo A through Grupo L) with a "Todos" option to show all
+- [ ] Inside the Group Stage section, a single "Clasificación" toggle collapses/expands both the per-group standings tables and the "Mejores terceros clasificados" block together
 - [ ] Knockout stage matches that are not yet resolved show placeholder identifiers (e.g. "1A vs 2B") instead of team names
 - [ ] A knockout match that went to a penalty shootout displays the 120-minute score alongside a "(pen.)" label
 - [ ] Match data is read directly from `data.json` with no manual duplication in component code
@@ -229,8 +232,10 @@
 ### Acceptance Criteria
 
 - [ ] After a knockout match is saved as `FINISHED`, the immediately dependent `W{id}` or `RU{id}` bracket slot in the next-round fixture is automatically updated with the advancing team name
+- [ ] Knockout propagation still updates the correct dependent fixture side even if that side currently contains a previously resolved team name
 - [ ] If a knockout match result is cleared (reset to `SCHEDULED`), the dependent bracket slot reverts to its placeholder code (e.g. `W73`)
 - [ ] After a group-stage match completes a group (all 6 matches `FINISHED`), the `1X` and `2X` Round of 32 bracket slots for that group are automatically populated with the 1st- and 2nd-placed team names
 - [ ] If a group-stage result is cleared and the group is no longer complete, the `1X` and `2X` slots revert to their placeholder codes
 - [ ] When all 12 groups are complete, the 8 third-place bracket slots (e.g. `3ABCDF`) are automatically resolved using FIFA criteria and each assigned a team whose group letter appears in the slot code's eligible set
 - [ ] Third-place bracket slots are reset to their placeholder codes whenever any group becomes incomplete again
+- [ ] Round of 32 through Final fixtures preserve immutable bracket slot references so progression logic can always retarget the correct match side independently of current displayed team names

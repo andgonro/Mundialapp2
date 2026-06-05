@@ -56,6 +56,12 @@ This document specifies the full functional, technical, and non-functional requi
 
 **FR-3.8** — Within the Fase de Grupos section, below each group's match list, the view shall display a real-time standings table for that group showing: position, team name, matches played (PJ), wins (G), draws (E), losses (P), goals for (GF), goals against (GC), goal difference (DG), and points (Pts). The top two rows in each table shall be visually highlighted as qualifying positions. When the group filter is set to "Todos", all 12 group tables shall be shown.
 
+**FR-3.9** — Each stage section in Partidos shall be independently collapsible/expandable via a visible toggle control in the stage header.
+
+**FR-3.10** — On initial load of the Partidos view, all stage sections shall be collapsed by default.
+
+**FR-3.11** — Inside the Group Stage section, a single "Clasificación" toggle shall collapse/expand all group standings tables and the "Mejores terceros clasificados" block together.
+
 ---
 
 ### FR-4: Estadísticas (Statistics View)
@@ -116,9 +122,9 @@ This document specifies the full functional, technical, and non-functional requi
 
 **FR-6.10** — For knockout matches where the admin activates the "went to penalties" option, a penalty winner selector shall appear allowing the admin to designate the home or away side as the shootout winner. This selection shall determine which team advances in the bracket. The scoring engine shall continue to treat the match as a draw for points purposes (FR-5.4). The penalty winner selector shall only be available for knockout-stage matches.
 
-**FR-6.11** — When a knockout match result is saved, the admin panel shall automatically resolve the immediate dependent bracket slot (`W{id}` or `RU{id}`) in the next-round fixture, replacing the placeholder team identifier with the actual advancing team name. Propagation is single-hop only and does not cascade further than the immediately dependent match.
+**FR-6.11** — When a knockout match result is saved, the admin panel shall automatically resolve the immediate dependent bracket slot (`W{id}` or `RU{id}`) in the next-round fixture, replacing that side's current team value with the actual advancing team name by targeting the slot reference metadata when present (`home_bracket_slot` / `away_bracket_slot`). Propagation is single-hop only and does not cascade further than the immediately dependent match.
 
-**FR-6.12** — When the result of a group-stage match completes a group (all 6 matches finished), the admin panel shall automatically populate the 1st-place (`1X`) and 2nd-place (`2X`) bracket slots in the Round of 32 with the corresponding team names from the computed group standings. When all 12 groups are complete, the 8 third-place bracket slots (e.g. `3ABCDF`) shall be automatically resolved by ranking all 12 third-placed teams using FIFA criteria and assigning each to the slot whose eligible group set contains that team's group letter.
+**FR-6.12** — When the result of a group-stage match completes a group (all 6 matches finished), the admin panel shall automatically populate the 1st-place (`1X`) and 2nd-place (`2X`) bracket slots in the Round of 32 with the corresponding team names from the computed group standings. When all 12 groups are complete, the 8 third-place bracket slots (e.g. `3ABCDF`) shall be automatically resolved by ranking all 12 third-placed teams using FIFA criteria and assigning each to the slot whose eligible group set contains that team's group letter. This update must continue to work even when the current `home_team` / `away_team` values already contain resolved team names from a prior update.
 
 ---
 
@@ -134,13 +140,15 @@ This document specifies the full functional, technical, and non-functional requi
 
 **TR-1.4** — Each entry in `scorers_stats` shall describe one assigned scorer, including the scorer's name as the key, and their national team and current goal count as values.
 
-**TR-1.5** — Each entry in the `matches` array shall include: a unique numeric ID, the stage name, the group identifier (if applicable), ISO 8601 date, local time string, home team name, away team name, home score (null if not yet played), away score (null if not yet played), stadium name, and a status string of either "SCHEDULED", "IN_PLAY", or "FINISHED". For knockout matches that went to a penalty shootout, an optional `penalty_winner_side` field (values: `"home"` or `"away"`) records the side that won the shootout for bracket advancement purposes.
+**TR-1.5** — Each entry in the `matches` array shall include: a unique numeric ID, the stage name, the group identifier (if applicable), ISO 8601 date, local time string, home team name, away team name, home score (null if not yet played), away score (null if not yet played), stadium name, and a status string of either "SCHEDULED", "IN_PLAY", or "FINISHED". For knockout matches that went to a penalty shootout, an optional `penalty_winner_side` field (values: `"home"` or `"away"`) records the side that won the shootout for bracket advancement purposes. For fixtures with derived participants, optional `home_bracket_slot` and `away_bracket_slot` fields shall store the immutable source slot tokens (e.g. `1A`, `3ABCDF`, `W89`, `RU101`).
 
 **TR-1.6** — Each match entry shall include an optional `goals` array. Each goal entry within it shall contain: scorer name and goal type (one of `"regular"`, `"extra_time"`, `"own_goal"`, `"assist"`, or `"penalty_shootout"`). Only goals of type `"regular"` or `"extra_time"` count towards scorer points (FR-5.6, FR-5.7).
 
 **TR-1.7** — Each knockout match entry shall include an optional boolean field `went_to_penalties` (default false). When true, the scoring engine shall treat the match as a draw for points purposes, regardless of the goals difference shown in the score. When `went_to_penalties` is true, the `penalty_winner_side` field (TR-1.5) shall determine the advancing team for bracket slot resolution.
 
 **TR-1.8** — The `data.json` file shall be fully seeded before deployment with all 104 fixtures (as specified in the game rules document), all 10 participant assignments, and all 40 scorer entries with `goals: 0` as their initial state.
+
+**TR-1.9** — For Round of 32 through Final fixtures whose participants are bracket-derived, `home_bracket_slot` and `away_bracket_slot` shall be seeded and remain unchanged during admin updates. Only `home_team` and `away_team` are replaced as progression resolves.
 
 ---
 

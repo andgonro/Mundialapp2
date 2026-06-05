@@ -51,42 +51,5 @@
 				</div>
 			</div>
 		</article>
-
-		<article class="panel full-width">
-			<div class="section-head">
-				<h3>Desglose por participante</h3>
-				<span class="chip">10 participantes</span>
-			</div>
-
-			<div class="players-grid">
-				<article class="player-card" *ngFor="let row of playerRows; trackBy: trackByPlayer">
-					<header>
-						<h4>{{ row.playerId }}</h4>
-						<strong>{{ row.totalPoints }} pts</strong>
-					</header>
-
-					<section>
-						<h5>Equipos</h5>
-						<ul>
-							<li *ngFor="let teamRow of row.teamBreakdown">
-								<span>{{ teamRow.team }}</span>
-								<strong>{{ teamRow.points }}</strong>
-							</li>
-						</ul>
-					</section>
-
-					<section>
-						<h5>Goleadores</h5>
-						<ul>
-							<li *ngFor="let scorerRow of row.scorerBreakdown">
-								<span>{{ scorerRow.scorer }}</span>
-								<small class="muted">{{ scorerRow.team }} · {{ scorerRow.goals }} G</small>
-								<strong>{{ scorerRow.points }}</strong>
-							</li>
-						</ul>
-					</section>
-				</article>
-			</div>
-		</article>
 	</section>
 </section>

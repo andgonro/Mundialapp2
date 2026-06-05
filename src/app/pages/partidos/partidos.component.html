@@ -20,122 +20,148 @@
 
 	<section *ngIf="!isLoading && !errorMessage" class="stage-list">
 		<article class="panel stage-block" *ngFor="let stage of stageOrder">
-			<ng-container *ngIf="getMatchesForStage(stage).length > 0">
-				<div class="stage-head">
-					<h3>{{ stageHeading(stage) }}</h3>
-					<span class="chip">{{ getMatchesForStage(stage).length }} partidos</span>
-				</div>
-
-				<div class="match-list">
-					<article
-						class="match-card"
-						*ngFor="let match of getMatchesForStage(stage); trackBy: trackByMatchId"
-						[class.pending]="match.status !== 'FINISHED'">
-
-						<div class="line-top">
-							<span class="chip">#{{ match.id }}</span>
-							<span class="chip">{{ stageTag(match) }}</span>
-							<span class="muted">{{ match.date }} · {{ match.time }}</span>
-						</div>
-
-						<div class="line-main">
-							<p class="teams">
-								<span>{{ match.home_team }}</span>
-								<strong class="score">{{ formatScore(match) }}</strong>
-								<span>{{ match.away_team }}</span>
-							</p>
-							<span class="penalty" *ngIf="match.went_to_penalties && match.home_score !== null && match.away_score !== null">
-								(pen.)
-							</span>
-						</div>
-
-						<p class="muted stadium">{{ match.stadium }}</p>
-					</article>
-				</div>
-
-				<ng-container *ngIf="stage === 'Group Stage'">
-					<div class="standings-section">
-						<div class="standings-block" *ngFor="let group of groupsToShow; trackBy: trackByGroup">
-							<h4 class="standings-title">Clasificación — Grupo {{ group }}</h4>
-							<div class="standings-scroll">
-								<table class="standings-table">
-									<thead>
-										<tr>
-											<th>#</th>
-											<th class="col-team">Selección</th>
-											<th title="Partidos jugados">PJ</th>
-											<th title="Victorias">G</th>
-											<th title="Empates">E</th>
-											<th title="Derrotas">P</th>
-											<th class="col-hide" title="Goles a favor">GF</th>
-											<th class="col-hide" title="Goles en contra">GC</th>
-											<th class="col-hide" title="Diferencia de goles">DG</th>
-											<th class="col-pts" title="Puntos">Pts</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr *ngFor="let row of getStandingsForGroup(group); let rank = index" [class.qualify]="rank < 2">
-											<td>{{ rank + 1 }}</td>
-											<td class="col-team">{{ row.teamName }}</td>
-											<td>{{ row.played }}</td>
-											<td>{{ row.won }}</td>
-											<td>{{ row.drawn }}</td>
-											<td>{{ row.lost }}</td>
-											<td class="col-hide">{{ row.goalsFor }}</td>
-											<td class="col-hide">{{ row.goalsAgainst }}</td>
-											<td class="col-hide">{{ row.goalDifference >= 0 ? '+' + row.goalDifference : row.goalDifference }}</td>
-											<td class="col-pts">{{ row.points }}</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
+			<ng-container *ngIf="getMatchesForStage(stage) as stageMatches">
+				<ng-container *ngIf="stageMatches.length > 0">
+					<div class="stage-head">
+						<button
+							type="button"
+							class="stage-toggle"
+							(click)="toggleStage(stage)"
+							[attr.aria-expanded]="isStageExpanded(stage)"
+							[attr.aria-controls]="stageBodyId(stage)">
+							<span class="toggle-icon" [class.expanded]="isStageExpanded(stage)" aria-hidden="true">▸</span>
+							<span class="stage-title">{{ stageHeading(stage) }}</span>
+						</button>
+						<span class="chip">{{ stageMatches.length }} partidos</span>
 					</div>
 
-					<div class="thirds-block" *ngIf="rankedThirds.length > 0">
-						<div class="thirds-header">
-							<h4 class="thirds-title">Mejores terceros clasificados</h4>
-							<span class="chip">{{ rankedThirds.length >= 8 ? '8 / 12 clasifican' : rankedThirds.length + ' / 12 grupos' }}</span>
+					<div class="stage-body" *ngIf="isStageExpanded(stage)" [id]="stageBodyId(stage)">
+						<div class="match-list">
+							<article
+								class="match-card"
+								*ngFor="let match of stageMatches; trackBy: trackByMatchId"
+								[class.pending]="match.status !== 'FINISHED'">
+
+								<div class="line-top">
+									<span class="chip">#{{ match.id }}</span>
+									<span class="chip">{{ stageTag(match) }}</span>
+									<span class="muted">{{ match.date }} · {{ match.time }}</span>
+								</div>
+
+								<div class="line-main">
+									<p class="teams">
+										<span>{{ match.home_team }}</span>
+										<strong class="score">{{ formatScore(match) }}</strong>
+										<span>{{ match.away_team }}</span>
+									</p>
+									<span class="penalty" *ngIf="match.went_to_penalties && match.home_score !== null && match.away_score !== null">
+										(pen.)
+									</span>
+								</div>
+
+								<p class="muted stadium">{{ match.stadium }}</p>
+							</article>
 						</div>
-						<div class="standings-scroll">
-							<table class="standings-table">
-								<thead>
-									<tr>
-										<th>#</th>
-										<th class="col-group" title="Grupo">Gr.</th>
-										<th class="col-team">Selección</th>
-										<th title="Partidos jugados">PJ</th>
-										<th title="Victorias">G</th>
-										<th title="Empates">E</th>
-										<th title="Derrotas">P</th>
-										<th class="col-hide" title="Goles a favor">GF</th>
-										<th class="col-hide" title="Goles en contra">GC</th>
-										<th class="col-hide" title="Diferencia de goles">DG</th>
-										<th class="col-pts" title="Puntos">Pts</th>
-									</tr>
-								</thead>
-								<tbody>
-									<ng-container *ngFor="let row of rankedThirds; let rank = index">
-										<tr class="cutline" *ngIf="rank === 8">
-											<td colspan="11" class="cutline-label">— No clasifican —</td>
-										</tr>
-										<tr [class.qualify]="rank < 8">
-											<td>{{ rank + 1 }}</td>
-											<td class="col-group">{{ row.group }}</td>
-											<td class="col-team">{{ row.teamName }}</td>
-											<td>{{ row.played }}</td>
-											<td>{{ row.won }}</td>
-											<td>{{ row.drawn }}</td>
-											<td>{{ row.lost }}</td>
-											<td class="col-hide">{{ row.goalsFor }}</td>
-											<td class="col-hide">{{ row.goalsAgainst }}</td>
-											<td class="col-hide">{{ row.goalDifference >= 0 ? '+' + row.goalDifference : row.goalDifference }}</td>
-											<td class="col-pts">{{ row.points }}</td>
-										</tr>
-									</ng-container>
-								</tbody>
-							</table>
-						</div>
+
+						<ng-container *ngIf="stage === 'Group Stage'">
+							<div class="classification-head">
+								<button
+									type="button"
+									class="classification-toggle"
+									(click)="toggleGroupClassification()"
+									[attr.aria-expanded]="isGroupClassificationExpanded"
+									aria-controls="group-classification-content">
+									<span class="toggle-icon" [class.expanded]="isGroupClassificationExpanded" aria-hidden="true">▸</span>
+									<span>Clasificación</span>
+								</button>
+							</div>
+
+							<div class="classification-body" *ngIf="isGroupClassificationExpanded" id="group-classification-content">
+								<div class="standings-section">
+									<div class="standings-block" *ngFor="let group of groupsToShow; trackBy: trackByGroup">
+										<h4 class="standings-title">Clasificación — Grupo {{ group }}</h4>
+										<div class="standings-scroll">
+											<table class="standings-table">
+												<thead>
+													<tr>
+														<th>#</th>
+														<th class="col-team">Selección</th>
+														<th title="Partidos jugados">PJ</th>
+														<th title="Victorias">G</th>
+														<th title="Empates">E</th>
+														<th title="Derrotas">P</th>
+														<th class="col-hide" title="Goles a favor">GF</th>
+														<th class="col-hide" title="Goles en contra">GC</th>
+														<th class="col-hide" title="Diferencia de goles">DG</th>
+														<th class="col-pts" title="Puntos">Pts</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr *ngFor="let row of getStandingsForGroup(group); let rank = index" [class.qualify]="rank < 2">
+														<td>{{ rank + 1 }}</td>
+														<td class="col-team">{{ row.teamName }}</td>
+														<td>{{ row.played }}</td>
+														<td>{{ row.won }}</td>
+														<td>{{ row.drawn }}</td>
+														<td>{{ row.lost }}</td>
+														<td class="col-hide">{{ row.goalsFor }}</td>
+														<td class="col-hide">{{ row.goalsAgainst }}</td>
+														<td class="col-hide">{{ row.goalDifference >= 0 ? '+' + row.goalDifference : row.goalDifference }}</td>
+														<td class="col-pts">{{ row.points }}</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+
+								<div class="thirds-block" *ngIf="rankedThirds.length > 0">
+									<div class="thirds-header">
+										<h4 class="thirds-title">Mejores terceros clasificados</h4>
+										<span class="chip">{{ rankedThirds.length >= 8 ? '8 / 12 clasifican' : rankedThirds.length + ' / 12 grupos' }}</span>
+									</div>
+									<div class="standings-scroll">
+										<table class="standings-table">
+											<thead>
+												<tr>
+													<th>#</th>
+													<th class="col-group" title="Grupo">Gr.</th>
+													<th class="col-team">Selección</th>
+													<th title="Partidos jugados">PJ</th>
+													<th title="Victorias">G</th>
+													<th title="Empates">E</th>
+													<th title="Derrotas">P</th>
+													<th class="col-hide" title="Goles a favor">GF</th>
+													<th class="col-hide" title="Goles en contra">GC</th>
+													<th class="col-hide" title="Diferencia de goles">DG</th>
+													<th class="col-pts" title="Puntos">Pts</th>
+												</tr>
+											</thead>
+											<tbody>
+												<ng-container *ngFor="let row of rankedThirds; let rank = index">
+													<tr class="cutline" *ngIf="rank === 8">
+														<td colspan="11" class="cutline-label">— No clasifican —</td>
+													</tr>
+													<tr [class.qualify]="rank < 8">
+														<td>{{ rank + 1 }}</td>
+														<td class="col-group">{{ row.group }}</td>
+														<td class="col-team">{{ row.teamName }}</td>
+														<td>{{ row.played }}</td>
+														<td>{{ row.won }}</td>
+														<td>{{ row.drawn }}</td>
+														<td>{{ row.lost }}</td>
+														<td class="col-hide">{{ row.goalsFor }}</td>
+														<td class="col-hide">{{ row.goalsAgainst }}</td>
+														<td class="col-hide">{{ row.goalDifference >= 0 ? '+' + row.goalDifference : row.goalDifference }}</td>
+														<td class="col-pts">{{ row.points }}</td>
+													</tr>
+												</ng-container>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</ng-container>
 					</div>
 				</ng-container>
 			</ng-container>

@@ -33,9 +33,48 @@
 	gap: 0.7rem;
 }
 
-.stage-head h3 {
-	font-size: 1.35rem;
+.stage-toggle {
+	border: none;
+	background: transparent;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
 	color: var(--gold);
+	font-size: 1.35rem;
+	font-weight: 700;
+	cursor: pointer;
+	text-align: left;
+}
+
+.stage-toggle:hover {
+	color: #f6d25f;
+}
+
+.stage-toggle:focus-visible,
+.classification-toggle:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 3px;
+	border-radius: 8px;
+}
+
+.toggle-icon {
+	display: inline-block;
+	font-size: 0.85rem;
+	transform: rotate(0deg);
+	transition: transform 0.18s ease;
+}
+
+.toggle-icon.expanded {
+	transform: rotate(90deg);
+}
+
+.stage-title {
+	line-height: 1.1;
+}
+
+.stage-body {
+	margin-top: 0.85rem;
 }
 
 .match-list {
@@ -113,6 +152,23 @@
 	margin-top: 1.1rem;
 	display: grid;
 	gap: 1rem;
+}
+
+.classification-head {
+	margin-top: 1rem;
+}
+
+.classification-toggle {
+	border: 1px solid var(--line);
+	background: rgba(8, 22, 28, 0.86);
+	color: var(--gold);
+	padding: 0.45rem 0.7rem;
+	border-radius: 10px;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	font-weight: 600;
+	cursor: pointer;
 }
 
 .standings-block {

@@ -35,6 +35,8 @@ export class PartidosComponent implements OnInit, OnDestroy {
   isLoading = true;
   errorMessage = '';
   selectedGroup = 'TODOS';
+  expandedStages = new Set<string>();
+  isGroupClassificationExpanded = false;
   matchesByStage: Record<string, Match[]> = {};
   groupStandings: Record<string, GroupStandingRow[]> = {};
   rankedThirds: GroupStandingRow[] = [];
@@ -79,6 +81,27 @@ export class PartidosComponent implements OnInit, OnDestroy {
     return this.stageLabels[stage] ?? stage;
   }
 
+  toggleStage(stage: string): void {
+    if (this.expandedStages.has(stage)) {
+      this.expandedStages.delete(stage);
+      return;
+    }
+
+    this.expandedStages.add(stage);
+  }
+
+  isStageExpanded(stage: string): boolean {
+    return this.expandedStages.has(stage);
+  }
+
+  stageBodyId(stage: string): string {
+    return `stage-body-${this.stageDomKey(stage)}`;
+  }
+
+  toggleGroupClassification(): void {
+    this.isGroupClassificationExpanded = !this.isGroupClassificationExpanded;
+  }
+
   stageTag(match: Match): string {
     if (match.stage === 'Group Stage' && match.group) {
       return `Grupo ${match.group}`;
@@ -112,6 +135,10 @@ export class PartidosComponent implements OnInit, OnDestroy {
       return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
     }
     return [this.selectedGroup];
+  }
+
+  private stageDomKey(stage: string): string {
+    return stage.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   }
 
   private groupMatchesByStage(data: GameData): Record<string, Match[]> {

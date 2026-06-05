@@ -34,10 +34,10 @@ Participants can open the URL on their phone at any time during the tournament a
 ## High-Level Approach
 
 - An Angular application is deployed to a free static host (e.g. GitHub Pages). No backend server is required.
-- All game data — fixture list, player-team assignments, player-scorer assignments, match results, and individual goals — is stored in a single `data.json` file committed to the GitHub repository and served from the app's assets folder.
+- All game data — fixture list, player-team assignments, player-scorer assignments, match results, individual goals, and immutable bracket slot references — is stored in a single `data.json` file committed to the GitHub repository and served from the app's assets folder.
 - On every page load the app fetches `data.json`, computes all standings and statistics in memory using a dedicated Angular scoring service, and renders the results.
 - The admin updates standings by editing `data.json` directly in the repository (via the GitHub web editor or local commit) and pushing a new commit. The app reflects the change on next page load.
-- The app has four main navigable views in Spanish: **Clasificación** (Leaderboard), **Partidos** (Fixtures), **Estadísticas** (Statistics), and **Admin**.
+- The app has four main navigable views in Spanish: **Clasificación** (Leaderboard), **Partidos** (Fixtures with collapsible phases and collapsible group classification), **Estadísticas** (Statistics), and **Admin**.
 - The Admin view is locked behind a password entry. The password (`mundial2026`) is never stored as plaintext in the source code; it is verified client-side against its SHA-256 hash. Once unlocked, the Admin view provides a match-centric result editor: the admin selects a match, enters the score and per-team goal events, and applies the update — the match status, scorer stats, and bracket slots are all updated automatically in memory. The admin can then download the updated `data.json` or publish it directly to the Netlify Blobs store. A "Cómo actualizar resultados" section provides step-by-step instructions for the full workflow.
 - The visual theme is dark with gold and green accents (football stadium aesthetic), mobile-first, and all UI text is in Spanish.
 
@@ -45,11 +45,11 @@ Participants can open the URL on their phone at any time during the tournament a
 
 ## Deliverables
 
-1. **`data.json`** — Fully seeded data file containing all 104 match fixtures, all 10 player-to-team and player-to-scorer assignments, and initial zero-score state for all scorers.
+1. **`data.json`** — Fully seeded data file containing all 104 match fixtures, all 10 player-to-team and player-to-scorer assignments, initial zero-score state for all scorers, and immutable bracket slot references (`home_bracket_slot` / `away_bracket_slot`) for all derived knockout fixtures.
 2. **Angular Scoring Service** — Pure, stateless service that computes: total points per player, points breakdown (teams vs. scorers), top scorer ranking, and team performance ranking from a given `data.json` input. Includes a companion `GroupStandingsService` that computes real-time FIFA group tables, ranks 3rd-placed teams cross-group, and resolves third-place bracket slot assignments.
 3. **Four routed Angular views:**
    - Clasificación (Leaderboard with expandable points breakdown)
-   - Partidos (Full fixture list, filterable by stage and group)
+   - Partidos (Full fixture list with collapsible stage sections, filterable group-stage matches, and collapsible group classification)
    - Estadísticas (Pichichi, team performance, per-player breakdown)
    - Admin (password-locked; in-app match result editor with score entry, per-team goal events, bracket auto-propagation, and download/publish controls)
 4. **Responsive UI** — Dark/gold/green theme, mobile-first layout (min 320px width), all text in Spanish.
