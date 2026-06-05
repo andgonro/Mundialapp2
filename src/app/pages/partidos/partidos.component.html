@@ -62,12 +62,12 @@
 								<div class="line-main">
 									<p class="teams">
 										<span class="team-cell">
-											<span>{{ match.home_team }}</span>
+											<span>{{ match.home_team }}  </span>
 											<span class="team-owner muted" *ngIf="getTeamOwnerId(match.home_team) as homeOwner">{{ homeOwner }}</span>
 										</span>
 										<strong class="score">{{ formatScore(match) }}</strong>
 										<span class="team-cell team-cell-away">
-											<span>{{ match.away_team }}</span>
+											<span>{{ match.away_team }}  </span>
 											<span class="team-owner muted" *ngIf="getTeamOwnerId(match.away_team) as awayOwner">{{ awayOwner }}</span>
 										</span>
 									</p>
