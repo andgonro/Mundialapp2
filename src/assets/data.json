@@ -41,7 +41,7 @@
       "scorers": [
         "Lionel Messi",
         "Kai Havertz",
-        "Lois Openda",
+        "Michael Olise",
         "Arda Güler"
       ]
     },
@@ -154,7 +154,7 @@
   "scorers_stats": {
     "K. Mbappé": {
       "team": "Francia",
-      "goals": 0
+      "goals": 4
     },
     "Raphinha": {
       "team": "Brasil",
@@ -170,7 +170,7 @@
     },
     "Harry Kane": {
       "team": "Inglaterra",
-      "goals": 0
+      "goals": 3
     },
     "Julián Álvarez": {
       "team": "Argentina",
@@ -186,19 +186,19 @@
     },
     "Lionel Messi": {
       "team": "Argentina",
-      "goals": 0
+      "goals": 6
     },
     "Kai Havertz": {
       "team": "Alemania",
-      "goals": 0
+      "goals": 2
     },
-    "Lois Openda": {
-      "team": "Bélgica",
+    "Michael Olise": {
+      "team": "Francia",
       "goals": 0
     },
     "Arda Güler": {
       "team": "Turquía",
-      "goals": 0
+      "goals": 1
     },
     "Bukayo Saka": {
       "team": "Inglaterra",
@@ -206,7 +206,7 @@
     },
     "O. Dembélé": {
       "team": "Francia",
-      "goals": 0
+      "goals": 4
     },
     "Bruno Fernandes": {
       "team": "Portugal",
@@ -218,7 +218,7 @@
     },
     "Vinícius Jr.": {
       "team": "Brasil",
-      "goals": 0
+      "goals": 4
     },
     "Y. En-Nesyri": {
       "team": "Marruecos",
@@ -234,7 +234,7 @@
     },
     "Erling Haaland": {
       "team": "Noruega",
-      "goals": 0
+      "goals": 4
     },
     "Darwin Núñez": {
       "team": "Uruguay",
@@ -250,11 +250,11 @@
     },
     "Lamine Yamal": {
       "team": "España",
-      "goals": 0
+      "goals": 1
     },
     "Cody Gakpo": {
       "team": "Países Bajos",
-      "goals": 0
+      "goals": 2
     },
     "Andrej Kramarić": {
       "team": "Croacia",
@@ -266,15 +266,15 @@
     },
     "Lautaro Martínez": {
       "team": "Argentina",
-      "goals": 0
+      "goals": 1
     },
     "Cristiano Ronaldo": {
       "team": "Portugal",
-      "goals": 0
+      "goals": 2
     },
     "Oyarzabal": {
       "team": "España",
-      "goals": 0
+      "goals": 2
     },
     "Enner Valencia": {
       "team": "Ecuador",
@@ -282,7 +282,7 @@
     },
     "Romelu Lukaku": {
       "team": "Bélgica",
-      "goals": 0
+      "goals": 2
     },
     "Jamal Musiala": {
       "team": "Alemania",
@@ -290,7 +290,7 @@
     },
     "Jonathan David": {
       "team": "Canadá",
-      "goals": 0
+      "goals": 3
     },
     "Kaoru Mitoma": {
       "team": "Japón",
@@ -302,7 +302,7 @@
     },
     "Luis Díaz": {
       "team": "Colombia",
-      "goals": 0
+      "goals": 1
     },
     "Breel Embolo": {
       "team": "Suiza",
@@ -310,7 +310,7 @@
     },
     "Rafael Leão": {
       "team": "Portugal",
-      "goals": 0
+      "goals": 1
     }
   },
   "matches": [
@@ -422,7 +422,12 @@
       "stadium": "Estadio Nueva York/Nueva Jersey",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Vinícius Jr.",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 7,
@@ -473,6 +478,14 @@
       "goals": [
         {
           "scorer": "Jamal Musiala",
+          "type": "regular"
+        },
+        {
+          "scorer": "Kai Havertz",
+          "type": "regular"
+        },
+        {
+          "scorer": "Kai Havertz",
           "type": "regular"
         }
       ]
@@ -559,8 +572,8 @@
       "time": "21:00",
       "home_team": "Bélgica",
       "away_team": "Egipto",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 1,
       "stadium": "Estadio de Seattle",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -575,8 +588,8 @@
       "time": "00:00",
       "home_team": "Arabia Saudí",
       "away_team": "Uruguay",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 1,
       "stadium": "Estadio Miami",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -591,8 +604,8 @@
       "time": "03:00",
       "home_team": "IR Irán",
       "away_team": "Nueva Zelanda",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 2,
+      "away_score": 2,
       "stadium": "Estadio Los Angeles",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -607,12 +620,21 @@
       "time": "21:00",
       "home_team": "Francia",
       "away_team": "Senegal",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 3,
+      "away_score": 1,
       "stadium": "Estadio Nueva York/Nueva Jersey",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "K. Mbappé",
+          "type": "regular"
+        },
+        {
+          "scorer": "K. Mbappé",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 18,
@@ -623,12 +645,21 @@
       "time": "00:00",
       "home_team": "Irak",
       "away_team": "Noruega",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 4,
       "stadium": "Estadio Boston",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Erling Haaland",
+          "type": "regular"
+        },
+        {
+          "scorer": "Erling Haaland",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 19,
@@ -639,12 +670,25 @@
       "time": "03:00",
       "home_team": "Argentina",
       "away_team": "Argelia",
-      "home_score": 0,
+      "home_score": 3,
       "away_score": 0,
       "stadium": "Estadio Kansas City",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Lionel Messi",
+          "type": "regular"
+        },
+        {
+          "scorer": "Lionel Messi",
+          "type": "regular"
+        },
+        {
+          "scorer": "Lionel Messi",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 20,
@@ -655,8 +699,8 @@
       "time": "06:00",
       "home_team": "Austria",
       "away_team": "Jordania",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 3,
+      "away_score": 1,
       "stadium": "Estadio de la Bahía de San Francisco",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -671,8 +715,8 @@
       "time": "19:00",
       "home_team": "Portugal",
       "away_team": "RD Congo",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 1,
       "stadium": "Estadio Houston",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -687,12 +731,21 @@
       "time": "22:00",
       "home_team": "Inglaterra",
       "away_team": "Croacia",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 4,
+      "away_score": 2,
       "stadium": "Estadio Dallas",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Harry Kane",
+          "type": "regular"
+        },
+        {
+          "scorer": "Harry Kane",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 23,
@@ -703,7 +756,7 @@
       "time": "01:00",
       "home_team": "Ghana",
       "away_team": "Panamá",
-      "home_score": 0,
+      "home_score": 1,
       "away_score": 0,
       "stadium": "Estadio de Toronto",
       "status": "FINISHED",
@@ -719,12 +772,17 @@
       "time": "04:00",
       "home_team": "Uzbekistán",
       "away_team": "Colombia",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 3,
       "stadium": "Estadio Ciudad de Mexico",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Luis Díaz",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 25,
@@ -735,8 +793,8 @@
       "time": "18:00",
       "home_team": "Chequia",
       "away_team": "Sudáfrica",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 1,
       "stadium": "Estadio Atlanta",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -751,8 +809,8 @@
       "time": "21:00",
       "home_team": "Suiza",
       "away_team": "Bosnia y Herzegovina",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 4,
+      "away_score": 1,
       "stadium": "Estadio Los Angeles",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -767,12 +825,25 @@
       "time": "00:00",
       "home_team": "Canadá",
       "away_team": "Catar",
-      "home_score": 0,
+      "home_score": 6,
       "away_score": 0,
       "stadium": "Estadio BC Place Vancouver",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Jonathan David",
+          "type": "regular"
+        },
+        {
+          "scorer": "Jonathan David",
+          "type": "regular"
+        },
+        {
+          "scorer": "Jonathan David",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 28,
@@ -783,7 +854,7 @@
       "time": "03:00",
       "home_team": "Mexico",
       "away_team": "Corea del Sur",
-      "home_score": 0,
+      "home_score": 1,
       "away_score": 0,
       "stadium": "Estadio Guadalajara",
       "status": "FINISHED",
@@ -799,7 +870,7 @@
       "time": "21:00",
       "home_team": "Estados Unidos",
       "away_team": "Australia",
-      "home_score": 0,
+      "home_score": 2,
       "away_score": 0,
       "stadium": "Estadio de Seattle",
       "status": "FINISHED",
@@ -816,7 +887,7 @@
       "home_team": "Escocia",
       "away_team": "Marruecos",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 1,
       "stadium": "Estadio Boston",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -831,12 +902,17 @@
       "time": "02:30",
       "home_team": "Brasil",
       "away_team": "Haití",
-      "home_score": 0,
+      "home_score": 3,
       "away_score": 0,
       "stadium": "Estadio Filadelfia",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Vinícius Jr.",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 32,
@@ -848,7 +924,7 @@
       "home_team": "Turquía",
       "away_team": "Paraguay",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 1,
       "stadium": "Estadio de la Bahía de San Francisco",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -863,12 +939,21 @@
       "time": "19:00",
       "home_team": "Países Bajos",
       "away_team": "Suecia",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 5,
+      "away_score": 1,
       "stadium": "Estadio Houston",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Cody Gakpo",
+          "type": "regular"
+        },
+        {
+          "scorer": "Cody Gakpo",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 34,
@@ -879,8 +964,8 @@
       "time": "22:00",
       "home_team": "Alemania",
       "away_team": "Costa de Marfil",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 2,
+      "away_score": 1,
       "stadium": "Estadio de Toronto",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -912,7 +997,7 @@
       "home_team": "Túnez",
       "away_team": "Japón",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 4,
       "stadium": "Estadio Monterrey",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -927,12 +1012,25 @@
       "time": "18:00",
       "home_team": "España",
       "away_team": "Arabia Saudí",
-      "home_score": 0,
+      "home_score": 4,
       "away_score": 0,
       "stadium": "Estadio Atlanta",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Lamine Yamal",
+          "type": "regular"
+        },
+        {
+          "scorer": "Oyarzabal",
+          "type": "regular"
+        },
+        {
+          "scorer": "Oyarzabal",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 38,
@@ -959,8 +1057,8 @@
       "time": "00:00",
       "home_team": "Uruguay",
       "away_team": "Cabo Verde",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 2,
+      "away_score": 2,
       "stadium": "Estadio Miami",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -975,8 +1073,8 @@
       "time": "03:00",
       "home_team": "Nueva Zelanda",
       "away_team": "Egipto",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 2,
       "stadium": "Estadio BC Place Vancouver",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -991,12 +1089,21 @@
       "time": "19:00",
       "home_team": "Argentina",
       "away_team": "Austria",
-      "home_score": 0,
+      "home_score": 2,
       "away_score": 0,
       "stadium": "Estadio Dallas",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Lionel Messi",
+          "type": "regular"
+        },
+        {
+          "scorer": "Lionel Messi",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 42,
@@ -1007,12 +1114,25 @@
       "time": "23:00",
       "home_team": "Francia",
       "away_team": "Irak",
-      "home_score": 0,
+      "home_score": 3,
       "away_score": 0,
       "stadium": "Estadio Filadelfia",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "K. Mbappé",
+          "type": "regular"
+        },
+        {
+          "scorer": "K. Mbappé",
+          "type": "regular"
+        },
+        {
+          "scorer": "O. Dembélé",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 43,
@@ -1023,12 +1143,21 @@
       "time": "02:00",
       "home_team": "Noruega",
       "away_team": "Senegal",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 3,
+      "away_score": 2,
       "stadium": "Estadio Nueva York/Nueva Jersey",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Erling Haaland",
+          "type": "regular"
+        },
+        {
+          "scorer": "Erling Haaland",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 44,
@@ -1039,8 +1168,8 @@
       "time": "05:00",
       "home_team": "Jordania",
       "away_team": "Argelia",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 2,
       "stadium": "Estadio de la Bahía de San Francisco",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1055,12 +1184,25 @@
       "time": "19:00",
       "home_team": "Portugal",
       "away_team": "Uzbekistán",
-      "home_score": 0,
+      "home_score": 5,
       "away_score": 0,
       "stadium": "Estadio Houston",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Rafael Leão",
+          "type": "regular"
+        },
+        {
+          "scorer": "Cristiano Ronaldo",
+          "type": "regular"
+        },
+        {
+          "scorer": "Cristiano Ronaldo",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 46,
@@ -1088,7 +1230,7 @@
       "home_team": "Panamá",
       "away_team": "Croacia",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 1,
       "stadium": "Estadio de Toronto",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1103,7 +1245,7 @@
       "time": "04:00",
       "home_team": "Colombia",
       "away_team": "RD Congo",
-      "home_score": 0,
+      "home_score": 1,
       "away_score": 0,
       "stadium": "Estadio Guadalajara",
       "status": "FINISHED",
@@ -1119,8 +1261,8 @@
       "time": "21:00",
       "home_team": "Suiza",
       "away_team": "Canadá",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 2,
+      "away_score": 1,
       "stadium": "Estadio BC Place Vancouver",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1135,8 +1277,8 @@
       "time": "21:00",
       "home_team": "Bosnia y Herzegovina",
       "away_team": "Catar",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 3,
+      "away_score": 1,
       "stadium": "Estadio de Seattle",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1152,11 +1294,20 @@
       "home_team": "Escocia",
       "away_team": "Brasil",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 3,
       "stadium": "Estadio Miami",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Vinícius Jr.",
+          "type": "regular"
+        },
+        {
+          "scorer": "Vinícius Jr.",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 52,
@@ -1167,8 +1318,8 @@
       "time": "00:00",
       "home_team": "Marruecos",
       "away_team": "Haití",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 4,
+      "away_score": 2,
       "stadium": "Estadio Atlanta",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1184,7 +1335,7 @@
       "home_team": "Chequia",
       "away_team": "Mexico",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 3,
       "stadium": "Estadio Ciudad de Mexico",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1199,7 +1350,7 @@
       "time": "03:00",
       "home_team": "Sudáfrica",
       "away_team": "Corea del Sur",
-      "home_score": 0,
+      "home_score": 1,
       "away_score": 0,
       "stadium": "Estadio Monterrey",
       "status": "FINISHED",
@@ -1216,7 +1367,7 @@
       "home_team": "Curazao",
       "away_team": "Costa de Marfil",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 2,
       "stadium": "Estadio Filadelfia",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1231,8 +1382,8 @@
       "time": "22:00",
       "home_team": "Ecuador",
       "away_team": "Alemania",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 2,
+      "away_score": 1,
       "stadium": "Estadio Nueva York/Nueva Jersey",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1247,8 +1398,8 @@
       "time": "01:00",
       "home_team": "Japón",
       "away_team": "Suecia",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 1,
       "stadium": "Estadio Dallas",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1263,8 +1414,8 @@
       "time": "01:00",
       "home_team": "Túnez",
       "away_team": "Países Bajos",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 3,
       "stadium": "Estadio Kansas City",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1279,12 +1430,17 @@
       "time": "04:00",
       "home_team": "Turquía",
       "away_team": "Estados Unidos",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 3,
+      "away_score": 2,
       "stadium": "Estadio Los Angeles",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Arda Güler",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 60,
@@ -1311,12 +1467,25 @@
       "time": "21:00",
       "home_team": "Noruega",
       "away_team": "Francia",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 4,
       "stadium": "Estadio Boston",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "O. Dembélé",
+          "type": "regular"
+        },
+        {
+          "scorer": "O. Dembélé",
+          "type": "regular"
+        },
+        {
+          "scorer": "O. Dembélé",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 62,
@@ -1327,7 +1496,7 @@
       "time": "21:00",
       "home_team": "Senegal",
       "away_team": "Irak",
-      "home_score": 0,
+      "home_score": 5,
       "away_score": 0,
       "stadium": "Estadio de Toronto",
       "status": "FINISHED",
@@ -1360,7 +1529,7 @@
       "home_team": "Uruguay",
       "away_team": "España",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 1,
       "stadium": "Estadio Guadalajara",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1375,8 +1544,8 @@
       "time": "05:00",
       "home_team": "Egipto",
       "away_team": "IR Irán",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 1,
       "stadium": "Estadio de Seattle",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1391,12 +1560,21 @@
       "time": "05:00",
       "home_team": "Nueva Zelanda",
       "away_team": "Bélgica",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 5,
       "stadium": "Estadio BC Place Vancouver",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Romelu Lukaku",
+          "type": "regular"
+        },
+        {
+          "scorer": "Romelu Lukaku",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 67,
@@ -1408,11 +1586,16 @@
       "home_team": "Panamá",
       "away_team": "Inglaterra",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 2,
       "stadium": "Estadio Nueva York/Nueva Jersey",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Harry Kane",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 68,
@@ -1423,8 +1606,8 @@
       "time": "23:00",
       "home_team": "Croacia",
       "away_team": "Ghana",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 2,
+      "away_score": 1,
       "stadium": "Estadio Filadelfia",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1455,8 +1638,8 @@
       "time": "01:30",
       "home_team": "RD Congo",
       "away_team": "Uzbekistán",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 3,
+      "away_score": 1,
       "stadium": "Estadio Atlanta",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1471,8 +1654,8 @@
       "time": "04:00",
       "home_team": "Argelia",
       "away_team": "Austria",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 3,
+      "away_score": 3,
       "stadium": "Estadio Kansas City",
       "status": "FINISHED",
       "went_to_penalties": false,
@@ -1487,12 +1670,21 @@
       "time": "04:00",
       "home_team": "Jordania",
       "away_team": "Argentina",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 3,
       "stadium": "Estadio Dallas",
       "status": "FINISHED",
       "went_to_penalties": false,
-      "goals": []
+      "goals": [
+        {
+          "scorer": "Lautaro Martínez",
+          "type": "regular"
+        },
+        {
+          "scorer": "Lionel Messi",
+          "type": "regular"
+        }
+      ]
     },
     {
       "id": 73,
@@ -1501,7 +1693,7 @@
       "group": null,
       "date": "2026-06-28",
       "time": "21:00",
-      "home_team": "Corea del Sur",
+      "home_team": "Sudáfrica",
       "away_team": "Canadá",
       "home_bracket_slot": "2A",
       "away_bracket_slot": "2B",
@@ -1519,7 +1711,7 @@
       "group": null,
       "date": "2026-06-29",
       "time": "19:00",
-      "home_team": "Escocia",
+      "home_team": "Brasil",
       "away_team": "Japón",
       "home_bracket_slot": "1C",
       "away_bracket_slot": "2F",
@@ -1538,7 +1730,7 @@
       "date": "2026-06-29",
       "time": "22:30",
       "home_team": "Alemania",
-      "away_team": "Países Bajos",
+      "away_team": "Suecia",
       "home_bracket_slot": "1E",
       "away_bracket_slot": "3ABCDF",
       "home_score": null,
@@ -1555,8 +1747,8 @@
       "group": null,
       "date": "2026-06-30",
       "time": "03:00",
-      "home_team": "Suecia",
-      "away_team": "Brasil",
+      "home_team": "Países Bajos",
+      "away_team": "Marruecos",
       "home_bracket_slot": "1F",
       "away_bracket_slot": "2C",
       "home_score": null,
@@ -1574,7 +1766,7 @@
       "date": "2026-06-30",
       "time": "19:00",
       "home_team": "Costa de Marfil",
-      "away_team": "Irak",
+      "away_team": "Noruega",
       "home_bracket_slot": "2E",
       "away_bracket_slot": "2I",
       "home_score": null,
@@ -1592,7 +1784,7 @@
       "date": "2026-06-30",
       "time": "23:00",
       "home_team": "Francia",
-      "away_team": "Marruecos",
+      "away_team": "Paraguay",
       "home_bracket_slot": "1I",
       "away_bracket_slot": "3CDFGH",
       "home_score": null,
@@ -1610,7 +1802,7 @@
       "date": "2026-07-01",
       "time": "03:00",
       "home_team": "Mexico",
-      "away_team": "España",
+      "away_team": "Ecuador",
       "home_bracket_slot": "1A",
       "away_bracket_slot": "3CEFHI",
       "home_score": null,
@@ -1627,8 +1819,8 @@
       "group": null,
       "date": "2026-07-01",
       "time": "18:00",
-      "home_team": "Croacia",
-      "away_team": "Austria",
+      "home_team": "Inglaterra",
+      "away_team": "RD Congo",
       "home_bracket_slot": "1L",
       "away_bracket_slot": "3EHIJK",
       "home_score": null,
@@ -1646,7 +1838,7 @@
       "date": "2026-07-01",
       "time": "22:00",
       "home_team": "Bélgica",
-      "away_team": "Noruega",
+      "away_team": "Argelia",
       "home_bracket_slot": "1G",
       "away_bracket_slot": "3AEHIJ",
       "home_score": null,
@@ -1664,7 +1856,7 @@
       "date": "2026-07-02",
       "time": "02:00",
       "home_team": "Estados Unidos",
-      "away_team": "Catar",
+      "away_team": "Bosnia y Herzegovina",
       "home_bracket_slot": "1D",
       "away_bracket_slot": "3BEFIJ",
       "home_score": null,
@@ -1681,8 +1873,8 @@
       "group": null,
       "date": "2026-07-02",
       "time": "21:00",
-      "home_team": "Arabia Saudí",
-      "away_team": "Argentina",
+      "home_team": "España",
+      "away_team": "Austria",
       "home_bracket_slot": "1H",
       "away_bracket_slot": "2J",
       "home_score": null,
@@ -1700,7 +1892,7 @@
       "date": "2026-07-03",
       "time": "01:00",
       "home_team": "Portugal",
-      "away_team": "Ghana",
+      "away_team": "Croacia",
       "home_bracket_slot": "2K",
       "away_bracket_slot": "2L",
       "home_score": null,
@@ -1717,8 +1909,8 @@
       "group": null,
       "date": "2026-07-03",
       "time": "05:00",
-      "home_team": "Bosnia y Herzegovina",
-      "away_team": "IR Irán",
+      "home_team": "Suiza",
+      "away_team": "Senegal",
       "home_bracket_slot": "1B",
       "away_bracket_slot": "3EFGIJ",
       "home_score": null,
@@ -1753,7 +1945,7 @@
       "group": null,
       "date": "2026-07-04",
       "time": "00:00",
-      "home_team": "Argelia",
+      "home_team": "Argentina",
       "away_team": "Cabo Verde",
       "home_bracket_slot": "1J",
       "away_bracket_slot": "2H",
@@ -1772,7 +1964,7 @@
       "date": "2026-07-04",
       "time": "03:30",
       "home_team": "Colombia",
-      "away_team": "Inglaterra",
+      "away_team": "Ghana",
       "home_bracket_slot": "1K",
       "away_bracket_slot": "3DEIJL",
       "home_score": null,
